@@ -34,6 +34,7 @@ namespace bitirmeProje.Controllers
                         Message = "Böyle bir kullanıcı bulunmamaktadır.",
                     });
                 }
+
                 return Json(new Response<object>
                 {
                     Success = true,
