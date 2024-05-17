@@ -167,7 +167,7 @@ namespace bitirmeProje.Migrations
                     username = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     mail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     phone_number = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     age = table.Column<int>(type: "int", nullable: false),

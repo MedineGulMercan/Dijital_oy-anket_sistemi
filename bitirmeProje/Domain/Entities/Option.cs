@@ -22,7 +22,6 @@ namespace bitirmeProje.Domain.Entities
         [Column("is_active")]
         public bool Is_Active { get; set; }
 
-        [Required]
         [Column("image_url")]
         public bool Image_Url { get; set; }
     }

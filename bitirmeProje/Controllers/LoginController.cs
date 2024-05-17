@@ -1,11 +1,16 @@
 ﻿using bitirmeProje.Domain.Entities;
 using bitirmeProje.Domain.IRepositories;
 using bitirmeProje.Dto;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace bitirmeProje.Controllers
 {
+    [AllowAnonymous]
     public class LoginController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -22,31 +27,34 @@ namespace bitirmeProje.Controllers
         [HttpPost]
         public async Task<IActionResult> UserLogin(LoginDto loginDto)
         {
-            try
-            {
-                var medinemDg = DateTime.UtcNow;
-                var data = await _userRepository.FirstOrDefaultAsync(x => x.Username == loginDto.Username && x.Password == loginDto.Password);
-                if (data == null)
-                {
-                    return Json(new Response<object>
-                    {
-                        Success = false,
-                        Message = "Böyle bir kullanıcı bulunmamaktadır.",
-                    });
-                }
 
+            var loginUserData = await _userRepository.FirstOrDefaultAsync(x => x.Username == loginDto.Username && x.Password == loginDto.Password);
+
+            if (loginUserData == null)
+            {
                 return Json(new Response<object>
                 {
-                    Success = true,
-                    Message = "Giriş Yapıldı",
-                    Result = data
+                    Success = false,
+                    Message = "Kullanıcı adı veya şifre hatalı!",
                 });
             }
-            catch (Exception e)
+
+            var claims = new List<Claim>
+                {
+                new Claim(ClaimTypes.Name, loginUserData.Username),
+                    new Claim(ClaimTypes.Role, loginUserData.IsAdmin?"admin":"user"),
+                    new Claim(ClaimTypes.NameIdentifier,loginUserData.Id.ToString()),//claimin içine kullanıcının id sini kaydettik, artık istediğimiz her yerden erişebiliriz.
+                };
+            var userIdentity = new ClaimsIdentity(claims, "Login");
+            var principal = new ClaimsPrincipal(userIdentity);
+            await HttpContext.SignInAsync(principal); //burada tokenı oluşturuyor.
+
+            return Json(new Response<object>
             {
-                Console.WriteLine(e.Message);
-            }
-            return null;
+                Success = true,
+                Message = "Giriş Yapıldı",
+                Result = loginUserData
+            });
         }
     }
 }

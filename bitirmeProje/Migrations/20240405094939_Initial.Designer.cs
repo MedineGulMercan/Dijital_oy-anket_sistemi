@@ -12,7 +12,7 @@ using bitirmeProje.Domain.DataBaseContext;
 namespace bitirmeProje.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240330123045_Initial")]
+    [Migration("20240405094939_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -360,7 +360,6 @@ namespace bitirmeProje.Migrations
                         .HasColumnName("gender_id");
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("image_url");
 

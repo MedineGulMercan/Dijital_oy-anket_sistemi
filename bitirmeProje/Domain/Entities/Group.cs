@@ -18,11 +18,9 @@ namespace bitirmeProje.Domain.Entities
         [Column("group_name", TypeName = "nvarchar(max)")]
         public string GroupName{ get; set; }
 
-        [Required]
         [Column("group_description", TypeName = "nvarchar(max)")]
         public string GroupDescription{ get; set; }
 
-        [Required]
         [Column("image_url", TypeName = "nvarchar(max)")]
         public string ImageUrl{ get; set; }
 

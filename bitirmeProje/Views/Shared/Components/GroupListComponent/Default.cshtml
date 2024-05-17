@@ -1,0 +1,40 @@
+﻿@using bitirmeProje.Domain.Entities;
+@{
+    var groups = ViewBag.Groups as List<Group>;
+}
+
+<!-- right sidebar fixed -->
+<div class="sidebar">
+    <!-- container aligned -->
+    <div class="ml-6 flex flex-col p-2">
+        <!-- suggestions -->
+        <div class="flex justify-between items-center mt-2">
+            <p class="font-semibold text-gray-500 text-lr">Sizin İçin Grup Önerileri</p>
+@*             <a href="#" class="text-black text-xs font-semibold">See All</a>
+ *@        </div>
+        @foreach (var item in groups)
+        {
+            <!-- suggested profile lists -->
+            <div class="flex flex-col flex-auto mt-3 space-y-3.5">
+                <!-- profile cards list items -->
+                <div class="flex justify-between items-center">
+                    <div class="flex flex-auto space-x-3 items-center">
+                        <div class="w-9 h-9">
+                            <a href=""><img class="w-full h-full rounded-full object-cover" src="./assets/images/hero.png" alt=""></a>
+                        </div>
+                        <div class="flex flex-col">
+                            <a href="/Group/Index?id=@item.Id" class="text-black text-lr font-semibold" href="#">@item.GroupName</a>
+                            <span class="text-gray-400 text-xl">@item.GroupDescription</span>
+                        </div>
+                    </div>
+                   @*  <div class="items-center">
+                        <a href="/Group/Index?id=@item.Id" class="text-blue-500 text-xl font-semibold">Grubu incele</a>
+                    </div> *@
+                </div>
+            </div>
+        }
+       
+    </div>
+</div>
+<script src="~/js/groupListComponent.js"></script>
+<script src="~/js/group.js"></script>

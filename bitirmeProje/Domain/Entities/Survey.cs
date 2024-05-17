@@ -11,7 +11,6 @@ namespace bitirmeProje.Domain.Entities
         [Column("survey_tittle", TypeName = "nvarchar(max)")]
         public string SurveyTittle { get; set; }
 
-        [Required]
         [Column("survey_description", TypeName = "nvarchar(max)")]
         public string SurveyDescription { get; set; }
 

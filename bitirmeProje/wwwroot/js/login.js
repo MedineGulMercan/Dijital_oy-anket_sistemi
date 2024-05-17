@@ -14,7 +14,7 @@ async function UserLogin(event) {
         contentType: false,
         success: function (data) {
             if (data.success) {
-                window.location.href = "/Login/Index?success=true&message=" + data.message;
+                window.location.href = "/Home/Index";
             }
             else {
                 error(data.message)

@@ -1,49 +1,188 @@
-﻿<!DOCTYPE html>
+﻿yap hadi yap tasarım bu<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - bitirmeProje</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/bitirmeProje.styles.css" asp-append-version="true" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Font Awesome 6.x sürümü -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+    <!-- Optional theme -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    @*     <link rel="shortcut icon" href="./assets/images/favicon.ico" type="image/x-icon"> *@
+    <title>Anket Sistemi</title>
+    <link rel="stylesheet" href="/css/style.css">
+
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">bitirmeProje</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+<body class="bg-gray-100">
+    <!-- sticky navbar -->
+    <nav class="fixed top-0 bg-white w-full border-b z-10">
+        <!-- navbar container -->
+        <div class="flex flex-row justify-between items-center py-2 px-3.5 sm:w-full sm:py-2 sm:px-4 md:w-full md:py-2 md:px-6 xl:w-9/12 xl:py-2.5 xl:px-8 mx-auto">
+
+            <!-- logo -->
+            <div class="">
+                <a href="#"><img class="mt-1.5 w-full h-full object-contain" src="./assets/images/logo.png" alt=""></a>
+            </div>
+
+            <!-- Arama Kutusu -->
+            <div class="relative sm:flex items-center justify-center w-3/12 py-1 bg-gray-50 rounded border">
+                <!-- Arama İkonu -->
+                <svg class="h-3.5 w-3.5 text-gray-500 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg>
+                <!-- Arama Kutusu -->
+                <input id="searchBox" class="bg-transparent ml-2 text-sm border-none outline-none" style="width:100%" type="text" placeholder="Search">
+
+                <!-- Arama Sonuçlarının Gösterileceği Bölüm -->
+                <div id="searchResults" style="position: absolute; top: 100%; left: 0; width: 100%; z-index: 9999;" class="bg-white rounded-lg border shadow-lg p-4 hidden">
+                    <!-- Dinamik olarak arama sonuçları buraya eklenecek -->
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+            <!-- icons container  -->
+            <div class="flex items-center space-x-5 mr-3">
+                <svg aria-label="Home" class="cursor-pointer" fill="#262626" height="22" role="img" viewBox="0 0 48 48" width="22"><path d="M45.5 48H30.1c-.8 0-1.5-.7-1.5-1.5V34.2c0-2.6-2.1-4.6-4.6-4.6s-4.6 2.1-4.6 4.6v12.3c0 .8-.7 1.5-1.5 1.5H2.5c-.8 0-1.5-.7-1.5-1.5V23c0-.4.2-.8.4-1.1L22.9.4c.6-.6 1.6-.6 2.1 0l21.5 21.5c.3.3.4.7.4 1.1v23.5c.1.8-.6 1.5-1.4 1.5z"></path></svg>
+                <svg aria-label="Messenger" id="openAddGroupModal" data-bs-toggle="modal" data-bs-target="#addGroupModal" class="cursor-pointer" fill="#262626" height="22" role="img" viewBox="0 0 48 48" width="22"><path d="M36.2 16.7L29 22.2c-.5.4-1.2.4-1.7 0l-5.4-4c-1.6-1.2-3.9-.8-5 .9l-6.8 10.7c-.7 1 .6 2.2 1.6 1.5l7.3-5.5c.5-.4 1.2-.4 1.7 0l5.4 4c1.6 1.2 3.9.8 5-.9l6.8-10.7c.6-1.1-.7-2.2-1.7-1.5zM24 1C11 1 1 10.5 1 23.3 1 30 3.7 35.8 8.2 39.8c.4.3.6.8.6 1.3l.2 4.1c0 1 .9 1.8 1.8 1.8.2 0 .5 0 .7-.2l4.6-2c.2-.1.5-.2.7-.2.2 0 .3 0 .5.1 2.1.6 4.3.9 6.7.9 13 0 23-9.5 23-22.3S37 1 24 1zm0 41.6c-2 0-4-.3-5.9-.8-.4-.1-.8-.2-1.3-.2-.7 0-1.3.1-2 .4l-3 1.3V41c0-1.3-.6-2.5-1.6-3.4C6.2 34 4 28.9 4 23.3 4 12.3 12.6 4 24 4s20 8.3 20 19.3-8.6 19.3-20 19.3z"></path></svg>
+                <svg aria-label="Find People" class="cursor-pointer" fill="#262626" height="22" role="img" onclick="" viewBox="0 0 48 48" width="22"><path clip-rule="evenodd" d="M24 0C10.8 0 0 10.8 0 24s10.8 24 24 24 24-10.8 24-24S37.2 0 24 0zm0 45C12.4 45 3 35.6 3 24S12.4 3 24 3s21 9.4 21 21-9.4 21-21 21zm10.2-33.2l-14.8 7c-.3.1-.6.4-.7.7l-7 14.8c-.3.6-.2 1.3.3 1.7.3.3.7.4 1.1.4.2 0 .4 0 .6-.1l14.8-7c.3-.1.6-.4.7-.7l7-14.8c.3-.6.2-1.3-.3-1.7-.4-.5-1.1-.6-1.7-.3zm-7.4 15l-5.5-5.5 10.5-5-5 10.5z" fill-rule="evenodd"></path></svg>
+                <svg aria-label="Activity Feed" class="cursor-pointer" fill="#262626" height="22" role="img" viewBox="0 0 48 48" width="22"><path d="M34.6 6.1c5.7 0 10.4 5.2 10.4 11.5 0 6.8-5.9 11-11.5 16S25 41.3 24 41.9c-1.1-.7-4.7-4-9.5-8.3-5.7-5-11.5-9.2-11.5-16C3 11.3 7.7 6.1 13.4 6.1c4.2 0 6.5 2 8.1 4.3 1.9 2.6 2.2 3.9 2.5 3.9.3 0 .6-1.3 2.5-3.9 1.6-2.3 3.9-4.3 8.1-4.3m0-3c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5.6 0 1.1-.2 1.6-.5 1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z"></path></svg>
+                <a href="/User/Index"><i class="fa-solid fa-user"></i></a>
+                <a href="/Login/Index">Çıkış Yap</a>
+                <a href="/Home/Index">Anasayfaya Dön</a>
+
+            </div>
+        </div>
+    </nav>
+    <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addGroupModalLabel">GRUP OLUŞTUR</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="group-create-form" onsubmit="return GroupCreate(event)">
+                        <div class="preview" id="preview" onclick="document.getElementById('groupImage').click()">
+                            <!-- Resim yoksa bu metin görünür -->
+                            <span>Resim Yükle</span>
+                        </div>
+                        <input type="file" name="groupImage" id="groupImage" accept="image/*" onchange="previewImage()">
+
+                        <div class="form-group">
+                            <label for="group-name" class="col-form-label">Grup İsmi</label>
+                            <input type="text" class="form-control" id="group_name" name="GroupName">
+                        </div>
+                        <div class="form-group">
+                            <label for="group-description" class="col-form-label">Grup Açıklaması</label>
+                            <textarea class="form-control" id="group_description" name="GroupDescription"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="public_private">•Grup Herkese Açık Mı?</label><br>
+                            <input type="checkbox" id="public" name="Private" value="true">
+                            <label for="public">Herkese Açık</label><br>
+                        </div>
+                        <div class="form-group">
+                            <label for="admins_members">•Tüm üyeler anket oluşturabilir mi?</label><br>
+                            <input type="checkbox" id="all-members" name="CanCreateSurvey" value="true">
+                            <label for="all-members">Evet,oluşturabilir.</label><br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">KAPAT</button>
+                            <button type="submit" class="btn btn-primary">GRUP OLUŞTUR</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- whole container -->
+    <!--<div class="flex h-full md:w-4/5 lg:w-3/4 mt-14 mx-auto">-->
+    <div class="">
+        <!--Add survey modal Start-->
+        <div class="modal fade" id="addSurveyModal" tabindex="-1" aria-labelledby="addSurveyModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addSurveyModalLabel">ANKET OLUŞTUR</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="survey-create-form" onsubmit="return SurveyCreate(event)">
+                            <div class="form-group">
+                                <label for="group-name" class="col-form-label">Grup İsmi</label>
+                                <select type="text" class="form-control" id="group_name_select" name="GroupName">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="survey-tittle" class="col-form-label">Anket Başlığı</label>
+                                <input class="form-control" id="survey_tittle" name="SurveyTittle" />
+                            </div>
+                            <div class="form-group">
+                                <label for="survey-question" class="col-form-label">Anket Sorusu</label>
+                                <textarea class="form-control" id="survey_question" name="SurveyQuestion"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="survey-option" class="col-form-label">Anket Şıkları</label>
+                                <div class="input-group">
+                                    <input class="form-control" id="survey_option" name="SurveyOption"></input>
+                                    <button type="button" class="btn btn-primary" onclick="addOption()">Şık Ekle</button>
+                                </div>
+                                <table id="option_table" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Seçenek</th>
+                                            <th scope="col">Sil</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="option_table_body">
+                                        <!-- Buraya eklenen seçenekler gelecek -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-group">
+                                <label for="survey-description" class="col-form-label">Anket Açıklaması</label>
+                                <textarea class="form-control" id="survey_description" name="SurveyDescription"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="start-date" class="col-form-label">Anket Başlangıç Tarihi</label>
+                                <input class="form-control" id="start_date" name="StartDate" type="datetime-local" />
+                            </div>
+                            <div class="form-group">
+                                <label for="end-date" class="col-form-label">Anket Bitiş Tarihi</label>
+                                <input class="form-control" id="end_date" name="EndDate" type="datetime-local" />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">KAPAT</button>
+                                <button type="submit" class="btn btn-primary">ANKET OLUŞTUR</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!--Add modal End-->
+        @RenderBody()
+        <!-- posts container -->
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - bitirmeProje - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="/assets/script.js"></script>
+    <script src="/js/group.js"></script>
+    <script src="/js/survey.js"></script>
+    <script src="/js/search.js"></script>
+    <script src="~/assets/js/plugins/bootstrap-notify.min.js"></script>
+    <script src="/js/site.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
