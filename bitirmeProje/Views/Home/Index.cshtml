@@ -4,21 +4,32 @@
         margin-top: 20px;
     }
 </style>
-<div class="row mt-5">
-    <div class="col-md-9">
-        <div id="page-width" class="survey-container flex mb-2">
-            <button class="w3-btn w3-white w3-border w3-round-large" id="openAddSurveyModal" data-bs-toggle="modal" data-bs-target="#addSurveyModal">Anket Oluşturmak için tıklayınız</button>
-        </div>
-        <div class="flex items-center">
-            <div class="m-auto" style="width:60%;">
-                @await Component.InvokeAsync("SurveyComponent", null)
+<div class="second_container">
+    <!--***** posts_container start ****** -->
+    <div class="main_section">
+        <div class="posts_container">
+            <div class="stories">
+                <div class="owl-carousel items owl-loaded owl-drag">
+                    <div class="owl-stage-outer">
+                        <div class="owl-stage" style="transform: translate3d(-542px, 0px, 0px); transition: all 0s ease 0s; width: 2104px;">
+                        </div>
+                    </div><div class="owl-nav disabled"><button type="button" role="presentation" class="owl-prev"><span aria-label="Previous">‹</span></button><button type="button" role="presentation" class="owl-next"><span aria-label="Next">›</span></button></div><div class="owl-dots"><button role="button" class="owl-dot active"><span></span></button><button role="button" class="owl-dot"><span></span></button><button role="button" class="owl-dot"><span></span></button></div>
+                </div>
             </div>
+
+            <div class="posts">
+                @await Component.InvokeAsync("SurveyComponent", null)
+            </div>
+
         </div>
     </div>
- 
-    <div class="col-md-3 px-5">
+    <!--***** posts_container end ****** -->
+    <!--***** followers_container start ****** -->
+    <div class="followers_container">
         @await Component.InvokeAsync("GroupListComponent")
     </div>
+    <!--***** followers_container end ****** -->
+
 </div>
 
 

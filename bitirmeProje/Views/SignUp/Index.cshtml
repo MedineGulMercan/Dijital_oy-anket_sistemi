@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,700">
+@* <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,700">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <style>
@@ -273,10 +273,92 @@
 			<span class="screen__background__shape screen__background__shape1"></span>
 		</div>
 	</div>
-</div>
+</div> *@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <link rel="stylesheet" href="/sass/vender/bootstrap.css">
+    <link rel="stylesheet" href="/sass/vender/bootstrap.min.css">
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="/sass/main.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sign_up">
+            <div class="content">
+                <div class="log-on border_insc">
+                    <div class="logo">
+                        <img src="/images/logo.png" alt="Instagram logo">
+                        <p>Kolayca anketler oluşturmak / anketlere katılmak için kaydolun!</p>
+                      
+                        <div class="seperator">
+                            <span class="ligne"></span>
+                            <span class="ou">OR</span>
+                            <span class="ligne"></span>
+                        </div>
+
+                    </div>
+                    <form action="" method="post" id="sign-up-form" name="sign-up-form" onsubmit="return SignUp(event)">
+                        <div>
+                            <input type="email" name="mail" id="mail" placeholder="Mail Adresiniz">
+                        </div>
+                        <div>
+                            <input type="text" name="name" id="name" placeholder="Adınız">
+                        </div>
+                        <div>
+                            <input type="text" name="surname" id="surname" placeholder="Soyadınız">
+                        </div>
+                        <div>
+                            <input type="text" name="username" id="username" placeholder="Kullanıcı Adı">
+                        </div>
+                        <div>
+                            <input type="password" name="password" id="password" placeholder="Şifre">
+                        </div>
+                        <div>
+                            <input type="number" name="phoneNumber" id="phoneNumber" placeholder="Telefon Numaranız">
+                        </div>
+                        <div>
+                            <select id="genderId" name="genderId" placeholder="Cinsiyet">
+                                @foreach (var gender in ViewBag.Genders)
+                                {
+                                    <option value="@gender.Id">@gender.GenderName</option>
+                                }
+                            </select>
+                        </div>
+                        <div>
+                            <input type="date" name="birthday" id="birthday" placeholder="Doğum Gününüz">
+                        </div>
+                        <button class="log_btn" type="submit">
+                            Kaydol
+                        </button>
+                    </form>
+                       
+                </div>
+                <div class="sing-in border_insc">
+                    <p>
+                        Hesabınız var mı?
+                        <a href="/Login/Index">Giriş Yap</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
+
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script> -->
+</body>
+</html>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"> </script>
 <script src="~/js/signUp.js"></script>
 <script src="~/assets/js/plugins/bootstrap-notify.min.js"></script>
-
 <script src="~/js/site.js"></script>
 

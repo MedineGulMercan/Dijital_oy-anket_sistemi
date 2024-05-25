@@ -2,6 +2,7 @@
 using bitirmeProje.Domain.IRepositories;
 using bitirmeProje.Dto;
 using bitirmeProje.Helper.Interface;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,9 +19,11 @@ namespace bitirmeProje.Controllers
         private readonly IGenderRepository _genderRepository;
         private readonly ICityRepository _cityRepository;
         private readonly ICountryRepository _countryRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
 
-        public UserController(IUserRepository userRepository, ILoginUserHelper loginUserHelper, IRoleRepository roleRepository, IGroupUserRepository groupUserRepository, IGroupRepository groupRepository, IDistrictRepository districtRepository, IGenderRepository genderRepository, ICityRepository cityRepository, ICountryRepository countryRepository)
+
+        public UserController(IUserRepository userRepository, ILoginUserHelper loginUserHelper, IRoleRepository roleRepository, IGroupUserRepository groupUserRepository, IGroupRepository groupRepository, IDistrictRepository districtRepository, IGenderRepository genderRepository, ICityRepository cityRepository, ICountryRepository countryRepository, IWebHostEnvironment webHostEnvironment)
         {
             _userRepository = userRepository;
             _loginUserHelper = loginUserHelper;
@@ -31,6 +34,7 @@ namespace bitirmeProje.Controllers
             _genderRepository = genderRepository;
             _cityRepository = cityRepository;
             _countryRepository = countryRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task <IActionResult> Index()
@@ -95,18 +99,46 @@ namespace bitirmeProje.Controllers
             }
             return groupMemberInfo;
         }
-        //[HttpPost]
-        //public async Task<IActionResult> UserUpdate(User user)
-        //{
-        //    var userId = _loginUserHelper.GetLoginUserId();
-        //    var data = _userRepository.GetAll(x=>x.Id== userId);
-        //    if (data != null) {
-                    
+        [HttpPost]
+        public async Task<IActionResult> UserUpdate(IFormFile img, User user)
+        {
+            var userId = _loginUserHelper.GetLoginUserId();
+
+            var path = "";
+            if (img != null)
+            {
+                // wwwroot path
+                var rootPath = _webHostEnvironment.WebRootPath;
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(img.FileName); // Uzantı olmadan dosya adı
+                var fileExtension = Path.GetExtension(img.FileName); // Dosya uzantısı
+                                                                     // Path to save the uploaded file
+                var filePath = Path.Combine(rootPath, "userImage", fileNameWithoutExtension + "-" + userId.ToString() + fileExtension);
+                // Ensure the uploads directory exists
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);
+                }
+                path = "/userImage/" + fileNameWithoutExtension + "-" + userId.ToString() + fileExtension;
+            }
             
-        //    }
-
-
-        //}
-
+            var data =await _userRepository.FirstOrDefaultAsync(x => x.Id == userId);
+            if (data != null)
+            {
+                data.Name= user.Name;
+                data.Surname = user.Surname;
+                data.PhoneNumber = user.PhoneNumber;
+                data.Birthday = user.Birthday;
+                data.Mail = user.Mail;
+                data.ImageUrl = img != null ? path : null;
+               await _userRepository.UpdateAsync(data);
+            }
+            return Json(new Response<User>
+            {
+                Success = true,
+                Message = "Kayıt Başarılı",
+                Result = data
+            });
+        }
     }
 }

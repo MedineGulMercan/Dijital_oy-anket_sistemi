@@ -19,7 +19,7 @@ namespace bitirmeProje.Dto
         public bool CanCreateSurvey { get; set; }
 
         public Guid QuestionId { get; set; }
-        public IQueryable<Option> SurveyOptions { get; set; }
+        public List<SurveyOptionDto> SurveyOptions { get; set; }
 
         public Guid UserId { get; set; }
 

@@ -93,3 +93,33 @@ async function SurveyCreate(event) {
     });
 }
 
+async function SetVote() {
+    event.preventDefault();
+    const form = event.target;
+    const questionId = form.querySelector('input[name="QuestionId"]').value;
+    const selectedOption = form.querySelector('input[type="radio"]:checked');
+    if (!selectedOption) {
+        alert("Lütfen bir seçenek seçin.");
+        return;
+    }
+    var formData = new FormData();
+    const optionId = selectedOption.id;
+    formData.append('optionId', optionId);
+    formData.append('questionId', questionId);
+    await $.ajax({
+        url: '/Survey/SetVote',
+        type: 'POST',
+        dataType: 'json',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            if (data.success) {
+                success(data.message);
+            }
+            else {
+                error(data.message)
+            }
+        }
+    });
+}

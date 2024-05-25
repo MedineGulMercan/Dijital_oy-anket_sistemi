@@ -33,30 +33,31 @@ namespace bitirmeProje.Controllers
         public async Task<IActionResult> Index(Guid id)
         {
             var userId = _loginUserHelper.GetLoginUserId();
-            var data = await (from gr in _groupRepository.GetAll(x => x.Id == id)
-                              join sr in _surveyRepository.GetAll(x => true) on gr.Id equals sr.GroupId
-                              join qs in _questionRepository.GetAll(x => true) on sr.QuestionId equals qs.Id
-                              //join gu in _groupUserRepository.GetAll(x=>true) on gr.Id equals gu.GroupId 
-                              //join u in _userRepository.GetAll(x=>true) on gu.UserId equals u.Id
-                              select new SurveyInfoDto
-                              {
-                                  GroupId = id,
-                                  QuestionId = qs.Id,
-                                  GroupName = gr.GroupName,
-                                  GroupDescription = gr.GroupDescription,
-                                  CanCreateSurvey = gr.CanCreateSurvey,
-                                  Private = gr.Private,
-                                  SurveyQuestion = qs.SurveyQuestion,
-                                  SurveyDescription = sr.SurveyDescription,
-                                  StartDate = sr.StartDate,
-                                  SurveyTittle = sr.SurveyTittle,
-                                  EndDate = sr.EndDate,
-                              }).ToListAsync();
-            data.ForEach(x => x.SurveyOptions = _optionRepository.GetAll(x => x.QuestionId == x.QuestionId));
+            //var data = await (from gr in _groupRepository.GetAll(x => x.Id == id)
+            //                  join sr in _surveyRepository.GetAll(x => true) on gr.Id equals sr.GroupId
+            //                  join qs in _questionRepository.GetAll(x => true) on sr.QuestionId equals qs.Id
+            //                  //join gu in _groupUserRepository.GetAll(x=>true) on gr.Id equals gu.GroupId 
+            //                  //join u in _userRepository.GetAll(x=>true) on gu.UserId equals u.Id
+            //                  select new SurveyInfoDto
+            //                  {
+            //                      GroupId = id,
+            //                      QuestionId = qs.Id,
+            //                      GroupName = gr.GroupName,
+            //                      GroupDescription = gr.GroupDescription,
+            //                      CanCreateSurvey = gr.CanCreateSurvey,
+            //                      Private = gr.Private,
+            //                      SurveyQuestion = qs.SurveyQuestion,
+            //                      SurveyDescription = sr.SurveyDescription,
+            //                      StartDate = sr.StartDate,
+            //                      SurveyTittle = sr.SurveyTittle,
+            //                      EndDate = sr.EndDate,
+            //                  }).ToListAsync();
+            //data.ForEach(x => x.SurveyOptions = _optionRepository.GetAll(x => x.QuestionId == x.QuestionId));
+
             var groupOwner = await _groupUserRepository.FirstOrDefaultAsync(x => x.GroupId == id && x.UserId == userId);
             ViewBag.AllGroupUsers = await GetAllGroupUsers(id);
             ViewBag.Role = groupOwner != null ? await _roleRepository.FirstOrDefaultAsync(x => x.Id == groupOwner.RoleId) : new Role();
-            ViewBag.GroupInfo = data;
+            //ViewBag.GroupInfo = data;
             ViewBag.User = userId;
             ViewBag.Group = await _groupRepository.FirstOrDefaultAsync(x => x.Id == id);
             ViewBag.IsMember = await _groupUserRepository.FirstOrDefaultAsync(x => x.GroupId == id && x.UserId == userId);

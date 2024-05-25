@@ -3,37 +3,25 @@
     var groups = ViewBag.Groups as List<Group>;
 }
 
-<!-- right sidebar fixed -->
-<div class="sidebar">
-    <!-- container aligned -->
-    <div class="ml-6 flex flex-col p-2">
-        <!-- suggestions -->
-        <div class="flex justify-between items-center mt-2">
-            <p class="font-semibold text-gray-500 text-lr">Sizin İçin Grup Önerileri</p>
-@*             <a href="#" class="text-black text-xs font-semibold">See All</a>
- *@        </div>
+<div>
+    <div class="suggestions">
+        <div class="title">
+            <h4>Sizin İçin Grup Önerileri</h4>
+        </div>
         @foreach (var item in groups)
         {
-            <!-- suggested profile lists -->
-            <div class="flex flex-col flex-auto mt-3 space-y-3.5">
-                <!-- profile cards list items -->
-                <div class="flex justify-between items-center">
-                    <div class="flex flex-auto space-x-3 items-center">
-                        <div class="w-9 h-9">
-                            <a href=""><img class="w-full h-full rounded-full object-cover" src="./assets/images/hero.png" alt=""></a>
-                        </div>
-                        <div class="flex flex-col">
-                            <a href="/Group/Index?id=@item.Id" class="text-black text-lr font-semibold" href="#">@item.GroupName</a>
-                            <span class="text-gray-400 text-xl">@item.GroupDescription</span>
-                        </div>
+            <div class="cart">
+                <div>
+                    <div class="img">
+                        <img src="/images/profile_img.jpg" alt="">
                     </div>
-                   @*  <div class="items-center">
-                        <a href="/Group/Index?id=@item.Id" class="text-blue-500 text-xl font-semibold">Grubu incele</a>
-                    </div> *@
+                    <div class="info">
+                        <a class="name" style="cursor:pointer; color:black"  href="/Group/Index?id=@item.Id">@item.GroupName</a>
+                        <p class="second_name">@item.GroupDescription</p>
+                    </div>
                 </div>
             </div>
         }
-       
     </div>
 </div>
 <script src="~/js/groupListComponent.js"></script>

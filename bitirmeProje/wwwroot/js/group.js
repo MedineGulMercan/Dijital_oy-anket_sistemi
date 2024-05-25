@@ -1,8 +1,9 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    const groupId = document.getElementById("groupId").value;
-
-    // Kullanıcının üyelik durumunu kontrol edin ve butonu ayarlayın
-    checkMembershipStatus(groupId);
+        var data = document.getElementById("groupId");
+    if (data != null) {
+        const groupId = data.value;
+        checkMembershipStatus(groupId);
+    }
 });
 // Kullanıcının üyelik durumunu kontrol et
 

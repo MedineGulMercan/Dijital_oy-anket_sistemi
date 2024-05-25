@@ -2,82 +2,124 @@
 @{
     var surveyInfoList = ViewBag.SurveyInfo as List<SurveyInfoDto>;
 }
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
 
-<div class="" id="post-container">
-    @if (surveyInfoList != null )
+</script>
+@if (surveyInfoList != null)
+{
+    @foreach (var survey in surveyInfoList)
     {
-        @foreach (var survey in surveyInfoList)
-        {
-            <div class="flex flex-col flex-auto border w-full rounded bg-white mb-4">
-                <!-- Üst kısmı (başlık ve grup adı) -->
-                <div class="flex justify-between px-3 py-2 border-b items-center">
-                    <div class="flex flex-auto space-x-3 items-center">
-                        <div class="w-11 h-11 p-0.5 rounded-full border-2 border-red-600">
-                            <img class="w-full h-full rounded-full border object-cover" src="default-avatar.png" alt="Grup Resmi" />
-                        </div>
-                        <a href="/Group/Index?id=@survey.GroupId" target="_blank" class="text-black text-sm font-semibold hover:underline" href="#">@survey.GroupName</a>
-                    </div>
+        <div class="post border p-3">
+            <div class="info">
+                <div class="person">
+                    <img src="https://i.ibb.co/3S1hjKR/account1.jpg" alt="Grup Resmi">
+                    <a href="/Group/Index?id=@survey.GroupId" target="_blank">@survey.GroupName</a>
+                    <span class="circle"></span>
+                    <span> @survey.StartDate.ToString("dd-MM-yyyy")</span>
+                    <span> / @survey.EndDate.ToString("dd-MM-yyyy")</span>
                 </div>
-
-                <!-- Anket sorusu ve diğer ayrıntılar -->
-                <div class="flex flex-col px-4 py-3 bg-gray-100 border-b rounded-lg shadow-md">
-                    <!-- Başlık ve sorular için stil ayarı -->
-                    <p class="text-xl mb-2">
-                        <span class="font-bold text-blue-600">Anket Başlığı:</span>
-                        @survey.SurveyTittle
-                    </p>
-                    <!-- Simge ile birlikte anket sorusu -->
-                    <div class="flex items-center space-x-2 mb-1">
-                        <svg class="text-blue-600 w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M4 4v16l7-8z"></path></svg>
-                        <p class="text-xl mb-2">
-                            <span class="font-bold text-blue-600">Anket Sorusu:</span>
-                            @survey.SurveyQuestion
-                        </p>
+                <div class="more">
+                    <img src="/images/show_more.png" alt="show more">
+                </div>
+            </div>
+            <div class="image">
+                <div>
+                    <h5>@survey.SurveyTittle</h5>
+                    <p>@survey.SurveyQuestion</p>
+                    <div class="desc">
+                        <div class="post_desc">
+                            <p>
+                                <a class="bold" href="#">Açıklama</a><br />
+                                @survey.SurveyDescription
+                            </p>
+                        </div>
                     </div>
-
-                    <!-- Açıklama için stil ayarı -->
-                    <p class="text-xl mb-2">
-                        <span class="font-bold text-blue-600">Anket Açıklaması:</span>
-                        @survey.SurveyDescription
-                    </p>
-                    <!-- Anket şıkları (seçenekleri) -->
-                    <div class="mt-3">
-                        @if (survey.SurveyOptions != null)
-                        {
-                            @foreach (var option in survey.SurveyOptions)
+                    <form id="@($"survey-vote-form-{survey.QuestionId}")" onsubmit="SetVote()">
+                        <input hidden name="QuestionId" value="@survey.QuestionId" />
+                        <div class="mt-3">
+                            @if (survey.SurveyOptions != null)
                             {
-                                <div class="flex items-center space-x-2 mb-2">
-                                    <input type="radio" name="@($"survey_{survey.QuestionId}")" id="@($"option_{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
-                                    <label for="@($"option_{option.Id}")" class="text-gray-700">@option.SurveyOption</label>
-                                </div>
+                                @foreach (var option in survey.SurveyOptions)
+                                {
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        @if (survey.EndDate >= DateTime.Now)
+                                        {
+                                            @if (option.IsVote == true)
+                                            {
+                                                <input type="radio" checked name="@($"survey_{survey.QuestionId}")" id="@($"{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" name="@($"survey_{survey.QuestionId}")" id="@($"{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @if (option.IsVote == true)
+                                            {
+                                                <input type="radio" disabled checked name="@($"survey_{survey.QuestionId}")" id="@($"{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
+                                            }
+                                            else
+                                            {
+                                                <input type="radio" disabled name="@($"survey_{survey.QuestionId}")" id="@($"{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
+
+                                            }
+                                        }
+                                        <label for="@($"option_{option.Id}")" class="text-gray-700">@option.SurveyOption</label>
+
+                                    </div>
+                                }
                             }
+                            else
+                            {
+                                <p class="text-gray-500 italic">Seçenek bulunamadı.</p>
+                            }
+                        </div>
+                        @if (survey.EndDate >= DateTime.Now)
+                        {
+                            <div class="row">
+                                <div class="col-md-6 mt-2">
+                                    <input type="submit" class="btn btn-primary form-control" value="Oyla" />
+                                </div>
+                                <div class="col-md-6 mt-2">
+                                    <input type="button" onclick="openReport('@survey.QuestionId')" class="btn btn-primary form-control" value="Anket Sonuçlarını Görüntüle" />
+                                </div>
+                            </div>
                         }
                         else
                         {
-                            <p class="text-gray-500 italic">Seçenek bulunamadı.</p>
+                            <input type="button" onclick="openReport('@survey.QuestionId')" class="btn btn-primary form-control" value="Anket Sonuçlarını Görüntüle" />
                         }
-                    </div>
-                    <!-- Tarihler için farklı stil -->
-                    <div class="flex justify-between mt-3 text-sm text-gray-500">
-                        <p>Başlangıç: @survey.StartDate.ToString("dd-MM-yyyy")</p>
-                        <p>Bitiş: @survey.EndDate.ToString("dd-MM-yyyy")</p>
-                    </div>
-                </div>
 
-                <!-- Beğeni ve oy sayısı -->
-                <div class="flex items-center justify-between py-2">
-                    <div class="flex space-x-4">
-                        <svg aria-label="Like" class="cursor-pointer" fill="#262626" height="24" role="img" viewBox="0 0 48 48" width="24">
-                            <path d="M34.6 6.1c5.7 0 10.4 5.2 10.4 11.5 0 6.8-5.9 11-11.5 16S25 41.3 24 41.9c-1.1-.7-4.7-4-9.5-8.3-5.7-5-11.5-9.2-11.5-16C3 11.3 7.7 6.1 13.4 6.1c4.2 0 6.5 2 8.1 4.3 1.9 2.6 2.2 3.9 2.5 3.9.3 0 .6-1.3 2.5-3.9 1.6-2.3 3.9-4.3 8.1-4.3m0-3c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5c.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 ve benzer svg path'ları devam ediyor."></path>
-                        </svg>
-                    </div>
+                    </form>
 
-                    <!-- Beğeni sayısı -->
-                    <a href="#" class="w-full font-semibold text-sm">200 Kişi Oy Kullandı</a>
                 </div>
-          
             </div>
-        }
-    }
 
+        </div>
+    }
+}
+
+<div class="modal fade" id="viewSurveyReport" tabindex="-1" aria-labelledby="viewSurveyReportModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between"
+                    id="exampleModalLabel">
+                    <span class="title_create" id="viewSurveyReportModalLabel">ANKET RAPORU</span>
+                    <button class="next_btn_post btn_link"></button>
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="chart_div"></div>
+            </div>
+        </div>
+    </div>
 </div>
+<script src="~/js/SurveyComponent.js"></script>
+
