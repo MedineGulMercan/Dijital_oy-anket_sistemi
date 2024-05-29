@@ -63,18 +63,15 @@ async function SurveyCreate(event) {
     var optionTableBody = document.getElementById('option_table_body');
     var optionRows = optionTableBody.getElementsByTagName('tr');
 
-    // Şıkları bir liste olarak topla
+    // Şıklar için boş liste oluştur
     var surveyOptions = [];
     for (var i = 0; i < optionRows.length; i++) {
-        var cell = optionRows[i].getElementsByTagName('td')[0]; // İlk hücredeki metni al
+        var cell = optionRows[i].getElementsByTagName('td')[0]; //İlk hücredeki metni al
         formData.append(`SurveyOptions[${i}].SurveyOption`, cell.textContent.trim()); // iç içe list şeklinde tutulan classlarda formdatanın anlmaası için index vererek
         // tek tek hangi prop'a geliceğini belirtiyoruz
     }
-    console.log(formData.get("SurveyOptions"));
-    // Şıkları form verilerine ekle
-
     var selectedGroup = $('#group_name_select').val(); // Seçili olanı al
-    formData.append('GroupId', selectedGroup); // FormData'ya ekle
+    formData.append('GroupId', selectedGroup); //FormData'ya grup ID'sini ekler
     await $.ajax({
         url: '/Survey/SurveyCreate',
         type: 'POST',
@@ -84,7 +81,15 @@ async function SurveyCreate(event) {
         contentType: false,
         success: function (data) {
             if (data.success) {
-                window.location.href = "/Home/Index?success=true&message=" + data.message;
+                $('#survey_tittle').val("")
+                $('#survey_question').val("")
+                $('#survey_description').val("")
+                $("#option_table_body").empty();
+                $("#start_date").val('');
+                $("#end_date").val('');
+                $("#end_date").val('');
+                $('#addSurveyModal').modal('hide');
+                success(data.message);
             }
             else {
                 error(data.message)
@@ -96,12 +101,15 @@ async function SurveyCreate(event) {
 async function SetVote() {
     event.preventDefault();
     const form = event.target;
+    // Oylanan sorunun Id'sini ve seçilen şıkkı çekiyoruz.
     const questionId = form.querySelector('input[name="QuestionId"]').value;
     const selectedOption = form.querySelector('input[type="radio"]:checked');
+    //Eğer seçili şık yoksa seçenek seçin hatası veriyoruz.
     if (!selectedOption) {
         alert("Lütfen bir seçenek seçin.");
         return;
     }
+    //FormData ile verileri controllera gönderiyoruz.
     var formData = new FormData();
     const optionId = selectedOption.id;
     formData.append('optionId', optionId);

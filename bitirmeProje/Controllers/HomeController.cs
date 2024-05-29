@@ -9,6 +9,7 @@ using System.Diagnostics;
 
 namespace bitirmeProje.Controllers
 {
+    [Authorize] 
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -33,28 +34,6 @@ namespace bitirmeProje.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = _loginUserHelper.GetLoginUserId();
-            //var datax = await (from gu in _groupUserRepository.GetAll(x => x.UserId == userId)
-            //                   join gr in _groupRepository.GetAll(x => true) on gu.GroupId equals gr.Id
-            //                   join sr in _surveyRepository.GetAll(x => true) on gr.Id equals sr.GroupId
-            //                   join qs in _questionRepository.GetAll(x => true) on sr.QuestionId equals qs.Id
-            //                   select new SurveyInfoDto
-            //                   {
-            //                       QuestionId = qs.Id,
-            //                       GroupName = gr.GroupName,
-            //                       GroupDescription = gr.GroupDescription,
-            //                       GroupId = gu.GroupId,
-            //                       CanCreateSurvey = gr.CanCreateSurvey,
-            //                       Private = gr.Private,
-            //                       UserId = userId,
-            //                       SurveyQuestion = qs.SurveyQuestion,
-            //                       SurveyDescription = sr.SurveyDescription,
-            //                       StartDate = sr.StartDate,
-            //                       SurveyTittle = sr.SurveyTittle,
-            //                       EndDate = sr.EndDate,
-            //                   }).ToListAsync();
-
-            //datax.ForEach(x => x.SurveyOptions = _optionRepository.GetAll(x => x.QuestionId == x.QuestionId));
-            //ViewBag.SurveyInfo = datax;
             return View();
         }
 

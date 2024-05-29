@@ -38,22 +38,12 @@ namespace bitirmeProje.Domain.Entities
         public DateTime Birthday { get; set; }
 
         [Required]
-        [Column("age")]
-        public int Age { get; set; }
-
-        [Required]
         [Column("is_active")]
         public bool IsActive { get; set; }
 
         [Required]
         [Column("is_admin")]
         public bool IsAdmin { get; set; }
-
-        [Required]
-        [Column("district_id")]
-        [ForeignKey("district_id")]
-        public Guid DistrictId { get; set; }
-        public virtual District District { get; set; }
 
         [Required]
         [Column("gender_id")]

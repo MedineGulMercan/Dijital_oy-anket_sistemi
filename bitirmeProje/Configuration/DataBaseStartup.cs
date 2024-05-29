@@ -8,7 +8,7 @@ namespace bitirmeProje.Configuration
     {
         public static IServiceCollection AddDatabaseModule(this IServiceCollection services)
         {
-            string connectionString = "Server=DESKTOP-F7K2U1C\\SQLEXPRESS;database=AnketSistemi;Integrated Security = true; TrustServerCertificate=True;";
+            string connectionString = "Server=analizgaraj.com\\MSSQLSERVER2019;Database=analizga_pollify;User Id=analizga_pollify;Password=tq0m5E7~1;TrustServerCertificate=True;";
             services.AddDbContext<Context>(options => options.UseSqlServer(connectionString, options => options.EnableRetryOnFailure()));
             return services;
         }

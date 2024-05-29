@@ -14,10 +14,13 @@
                         resultsContainer.append("<p>Bu isime sahip bir grup bulunamadı.</p>");
                     } else {
                         data.forEach(function (group) {
+                            var image1 = ' <img class="fixed-size-image-40" src="/groupImage/group-photo.jpg" alt="">'
+                            var image2 = `<img class="fixed-size-image-40" src="${group.imageUrl}" alt="">` 
                             resultsContainer.append(`<div class="cart">
                         <div>
+                       
                             <div  class="img">
-                                <img src="/images/profile_img.jpg" alt="">
+                             ${group.imageUrl ? image2 :image1   }
                             </div>
                             <div class="info">
                                 <p class="name" style="cursor: pointer;"  onclick="openPage('${group.id}')">${group.groupName}</p>
@@ -25,22 +28,6 @@
                         </div>
                     </div>`);
                         });
-                        /*
-                        <div b-cg3yhkq320="" class="cart">
-                        <div b-cg3yhkq320="">
-                            <div b-cg3yhkq320="" class="img">
-                                <img b-cg3yhkq320="" src="/images/profile_img.jpg" alt="">
-                            </div>
-                            <div b-cg3yhkq320="" class="info">
-                                <p b-cg3yhkq320="" class="name">Zineb_essoussi</p>
-                                <p b-cg3yhkq320="" class="second_name">Zim Ess</p>
-                            </div>
-                        </div>
-                        <div b-cg3yhkq320="" class="clear">
-                            <a b-cg3yhkq320="" href="#">X</a>
-                        </div>
-                    </div>
-                        */
                     }
                 },
                 error: function (xhr, status, error) { // Hata durumunda

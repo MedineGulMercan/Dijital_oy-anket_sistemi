@@ -8,6 +8,7 @@ namespace bitirmeProje.Dto
         public string SurveyTittle { get; set; }
 
         public string SurveyDescription { get; set; }
+        public DateTime CreatedDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
@@ -17,7 +18,7 @@ namespace bitirmeProje.Dto
         public string ImageUrl { get; set; }
         public bool Private { get; set; }
         public bool CanCreateSurvey { get; set; }
-
+        public string UserImage { get; set; }
         public Guid QuestionId { get; set; }
         public List<SurveyOptionDto> SurveyOptions { get; set; }
 

@@ -282,7 +282,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram</title>
+    <title>Pollify</title>
     <link rel="stylesheet" href="/sass/vender/bootstrap.css">
     <link rel="stylesheet" href="/sass/vender/bootstrap.min.css">
 
@@ -325,7 +325,7 @@
                             <input type="number" name="phoneNumber" id="phoneNumber" placeholder="Telefon Numaranız">
                         </div>
                         <div>
-                            <select id="genderId" name="genderId" placeholder="Cinsiyet">
+                            <select id="genderId" name="genderId" class="form-control" placeholder="Cinsiyet">
                                 @foreach (var gender in ViewBag.Genders)
                                 {
                                     <option value="@gender.Id">@gender.GenderName</option>

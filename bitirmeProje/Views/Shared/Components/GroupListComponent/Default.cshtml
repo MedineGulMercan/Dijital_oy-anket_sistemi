@@ -13,7 +13,14 @@
             <div class="cart">
                 <div>
                     <div class="img">
-                        <img src="/images/profile_img.jpg" alt="">
+                        @if (string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="/groupImage/group-photo.jpg" alt="" class="fixed-size-image-40">
+                        }
+                        else
+                        {
+                            <img src="@item.ImageUrl" alt="Group Image" class="fixed-size-image-40">
+                        }
                     </div>
                     <div class="info">
                         <a class="name" style="cursor:pointer; color:black"  href="/Group/Index?id=@item.Id">@item.GroupName</a>

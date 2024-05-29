@@ -12,8 +12,8 @@ using bitirmeProje.Domain.DataBaseContext;
 namespace bitirmeProje.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240405094939_Initial")]
-    partial class Initial
+    [Migration("20240529190742_mig_1.2")]
+    partial class mig_12
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,69 +24,6 @@ namespace bitirmeProje.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.City", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CityName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("city_name");
-
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("country_id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("City");
-                });
-
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.Country", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
-
-                    b.Property<string>("CountryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("country_name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Country");
-                });
-
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.District", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
-
-                    b.Property<Guid>("CityId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("city_id");
-
-                    b.Property<string>("DistrictName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("district_name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CityId");
-
-                    b.ToTable("District");
-                });
 
             modelBuilder.Entity("bitirmeProje.Domain.Entities.Gender", b =>
                 {
@@ -234,10 +171,6 @@ namespace bitirmeProje.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("question_description");
 
-                    b.Property<Guid>("QuestionTypeId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("question_type_id");
-
                     b.Property<string>("SurveyQuestion")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -245,26 +178,7 @@ namespace bitirmeProje.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionTypeId");
-
                     b.ToTable("Question");
-                });
-
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.QuestionType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("id");
-
-                    b.Property<string>("QuestionTypeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("question_type_name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("QuestionType");
                 });
 
             modelBuilder.Entity("bitirmeProje.Domain.Entities.Role", b =>
@@ -290,6 +204,10 @@ namespace bitirmeProje.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("created_date");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2")
@@ -343,17 +261,9 @@ namespace bitirmeProje.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int")
-                        .HasColumnName("age");
-
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime2")
                         .HasColumnName("birthday");
-
-                    b.Property<Guid>("DistrictId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("district_id");
 
                     b.Property<Guid>("GenderId")
                         .HasColumnType("uniqueidentifier")
@@ -403,8 +313,6 @@ namespace bitirmeProje.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DistrictId");
-
                     b.HasIndex("GenderId");
 
                     b.ToTable("Users");
@@ -432,28 +340,6 @@ namespace bitirmeProje.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Vote");
-                });
-
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.City", b =>
-                {
-                    b.HasOne("bitirmeProje.Domain.Entities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.District", b =>
-                {
-                    b.HasOne("bitirmeProje.Domain.Entities.City", "City")
-                        .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("City");
                 });
 
             modelBuilder.Entity("bitirmeProje.Domain.Entities.GroupUser", b =>
@@ -494,17 +380,6 @@ namespace bitirmeProje.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("bitirmeProje.Domain.Entities.Question", b =>
-                {
-                    b.HasOne("bitirmeProje.Domain.Entities.QuestionType", "QuestionType")
-                        .WithMany()
-                        .HasForeignKey("QuestionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("QuestionType");
-                });
-
             modelBuilder.Entity("bitirmeProje.Domain.Entities.Survey", b =>
                 {
                     b.HasOne("bitirmeProje.Domain.Entities.Group", "Group")
@@ -534,19 +409,11 @@ namespace bitirmeProje.Migrations
 
             modelBuilder.Entity("bitirmeProje.Domain.Entities.User", b =>
                 {
-                    b.HasOne("bitirmeProje.Domain.Entities.District", "District")
-                        .WithMany()
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("bitirmeProje.Domain.Entities.Gender", "Gender")
                         .WithMany()
                         .HasForeignKey("GenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("District");
 
                     b.Navigation("Gender");
                 });

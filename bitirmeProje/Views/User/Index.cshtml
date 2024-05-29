@@ -3,9 +3,6 @@
 @{
     var userInfo = ViewBag.UserInfo as User;
     var Gender = ViewBag.Gender as Gender;
-    var City = ViewBag.City as City;
-    var Country = ViewBag.Country as Country;
-    var District = ViewBag.District as District;
     var GroupsManagedBy = ViewBag.GroupsManagedBy as List<Group>;
     var groupMemberInfo = ViewBag.GroupMemberInfo as List<Group>;
 }
@@ -15,7 +12,14 @@
     <div class="profile_info">
         <div class="cart">
             <div class="img">
-                <img src="@userInfo.ImageUrl" alt="">
+                @if (string.IsNullOrEmpty(userInfo.ImageUrl))
+                {
+                    <img src="/userImage/user-image.jpg" alt="User Image" class="fixed-size-image-80">
+                }
+                else
+                {
+                    <img src="@userInfo.ImageUrl" alt="User Image" class="fixed-size-image-80">
+                }
             </div>
             <div class="info">
                 <p class="name">
@@ -54,7 +58,14 @@
                         <div class="cart">
                             <div>
                                 <div class="img">
-                                    <img src="/images/profile_img.jpg" alt="">
+                                    @if (string.IsNullOrEmpty(item.ImageUrl))
+                                    {
+                                        <img src="/groupImage/group-photo.jpg" class="fixed-size-image-40">
+                                    }
+                                    else
+                                    {
+                                        <img src="@item.ImageUrl" alt="Group Image" class="fixed-size-image-40">
+                                    }
                                 </div>
                                 <div class="info">
                                     <p onclick="window.location.href='/Group/Index?id=@item.Id'" style="cursor:pointer" class="name">@item.GroupName</p>
@@ -74,7 +85,14 @@
                     <div class="cart">
                         <div>
                             <div class="img">
-                                <img src="/images/profile_img.jpg" alt="">
+                                @if (string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="/groupImage/group-photo.jpg" alt="" class="fixed-size-image-40">
+                                }
+                                else
+                                {
+                                    <img src="@item.ImageUrl" alt="Group Image" class="fixed-size-image-40">
+                                }
                             </div>
                             <div class="info">
                                 <p onclick="window.location.href='/Group/Index?id=@item.Id'" style="cursor:pointer" class="name">@item.GroupName</p>
@@ -88,11 +106,12 @@
         <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
             <div id="tagged" class="post">
                 <form id="user-update-form" onsubmit="UserUpdate()">
+                    <input type="text" hidden name="Id" value="@userInfo.Id" accept="image/*">
                     <p>
                         <label class=" w3-text-blue"><b>Resim Yükle</b></label>
                         <input type="file" class="form-control" name="img" id="groupImage" accept="image/*">
-
-                        <input type="text" hidden name="Id" value="@userInfo.Id" accept="image/*">
+                        <input type="text" hidden class="form-control" name="ImageUrl" id="ImageUrl" value="@userInfo.ImageUrl" accept="image/*">
+                        <button type="button" onclick="deleteImage()" class="form-control">Resmi Sil</button>
                     </p>
                     <p>
                         <label class=" w3-text-blue"><b>Adınız</b></label>

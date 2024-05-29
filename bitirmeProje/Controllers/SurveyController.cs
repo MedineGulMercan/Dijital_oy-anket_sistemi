@@ -2,6 +2,7 @@
 using bitirmeProje.Domain.IRepositories;
 using bitirmeProje.Dto;
 using bitirmeProje.Helper.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
@@ -9,6 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace bitirmeProje.Controllers
 {
+    [Authorize]
     public class SurveyController : Controller
     {
         private readonly IGroupUserRepository _groupUserRepository;
@@ -43,17 +45,17 @@ namespace bitirmeProje.Controllers
         [HttpPost]
         public async Task<IActionResult> SurveyCreate(SurveyDto surveyDto)
         {
-            var userId = _loginUserHelper.GetLoginUserId();
+            var userId = _loginUserHelper.GetLoginUserId();// Giriş yapan kullanıcı ID'sini alır
             surveyDto.UserId = userId;
             surveyDto.IsActive = true;
-
+            //Anketin sorusunuu question tablosuna kaydeder.
             var data = await _questionRepository.CreateAsync(new Question
             {
                 SurveyQuestion = surveyDto.SurveyQuestion,
                 QuestionDescription = surveyDto.SurveyDescription,
-                QuestionTypeId = new Guid("67020fa7-62ba-4c0f-a6b0-067865d5f6f9"),
                 ImageUrl = ""
             });
+            //Anket bilgilerini survey tablosuna kaydeder.
             await _surveyRepository.CreateAsync(new Survey
             {
                 SurveyTittle = surveyDto.SurveyTittle,
@@ -64,12 +66,11 @@ namespace bitirmeProje.Controllers
                 QuestionId = data.Id,
                 UserId = userId,
                 IsActive = true,
-
+                CreatedDate = DateTime.Now,
             });
-            try
+            //Option tablosuna ankete eklenen şıkları sorunun ıd'siyle birlikte ekler.
+                foreach (var item in surveyDto.SurveyOptions) // Anket şıkları üzerinde döngü
             {
-                foreach (var item in surveyDto.SurveyOptions)
-                {
                     await _optionRepository.CreateAsync(new Option
                     {
                         QuestionId = data.Id,
@@ -78,37 +79,32 @@ namespace bitirmeProje.Controllers
                         Image_Url = false,
                     });
                 }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
             return Json(new Response<Survey>
             {
                 Success = true,
                 Message = "Kayıt Başarılı",
             });
-
         }
         [HttpPost]
         public async Task<IActionResult> SetVote(Guid optionId, Guid questionId)
         {
+            //Gelen QuestionId ye göre anketi çekiyoruz.
             var survey = await _surveyRepository.FirstOrDefaultAsync(x => x.QuestionId == questionId);
-
+            //Anketin süresinin dolup dolmadığını kontrol ediyoruz.
             if (survey?.EndDate >= DateTime.Now)
             {
                 var userId = _loginUserHelper.GetLoginUserId();
+                //Sorunun şıklarını option tablosundan çekiyoruz.
                 var options = _optionRepository.GetAll(x => x.QuestionId == questionId);
                 foreach (var item in options)
-                {
+                {   //Daha önce oyladıysa kayıt tekrarı olmaması için siliyoruz 
                     var optionVote = await _voteRepository.FirstOrDefaultAsync(x => x.OptionId == item.Id && x.UserId==userId);
                     if (optionVote != null)
                     {
                         await _voteRepository.DeleteAsync(optionVote);
                     }
                 }
+                //Verdiği cevabı Vote tablosuna kaydediyoruz
                 await _voteRepository.CreateAsync(new Vote
                 {
                     OptionId = optionId,
@@ -131,26 +127,27 @@ namespace bitirmeProje.Controllers
         [HttpPost]
         public async Task<IActionResult> GetVoteReport(Guid questionId)
         {
+            //// Belirtilen soruya ait tüm seçenekleri alır ID'lerini seçer
             var questionOptions = await _optionRepository.GetAll(x => x.QuestionId == questionId).ToListAsync();
             var ids = questionOptions.Select(w => w.Id);
             var data = _voteRepository.GetAll(x => ids.Contains(x.OptionId))
-                 .GroupBy(x => x.OptionId)
+                 .GroupBy(x => x.OptionId) //Seçenek ID'sine göre gruplar
                  .Select(group => new
                  {
                      OptionId = group.Key, // Grup ID'si (OptionId)
                      Count = group.Count() // Grup içindeki eleman sayısı
-                 }).ToList();
+                 }).ToList(); // Gruplama sonuçlarını listeye çevirir
 
             var list = new List<SurveyReportDto>();
             foreach (var item in data)
             {
                 list.Add(new SurveyReportDto
                 {
-                    Name = questionOptions.FirstOrDefault(x=>x.Id == item.OptionId).SurveyOption,
-                    Count = item.Count
+                    Name = questionOptions.FirstOrDefault(x=>x.Id == item.OptionId).SurveyOption,// // Seçenek adı
+                    Count = item.Count //// Oy sayısı
                 });
             }
-            return Json(list);
+            return Json(list);//// JSON formatında yanıt döner
         }
     }
 }

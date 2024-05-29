@@ -13,7 +13,9 @@ namespace bitirmeProje.Domain.Entities
 
         [Column("survey_description", TypeName = "nvarchar(max)")]
         public string SurveyDescription { get; set; }
-
+        [Required]
+        [Column("created_date")]
+        public DateTime CreatedDate { get; set; }
         [Required]
         [Column("start_date")]
         public DateTime StartDate { get; set; }

@@ -15,7 +15,14 @@
         <div class="post border p-3">
             <div class="info">
                 <div class="person">
-                    <img src="https://i.ibb.co/3S1hjKR/account1.jpg" alt="Grup Resmi">
+                    @if (string.IsNullOrEmpty(survey.ImageUrl))
+                    {
+                        <img src="/groupImage/group-photo.jpg" alt="Grup Image" class="fixed-size-image-20">
+                    }
+                    else
+                    {
+                        <img src="@survey.ImageUrl" alt="Grup Image" class="fixed-size-image-20">
+                    }
                     <a href="/Group/Index?id=@survey.GroupId" target="_blank">@survey.GroupName</a>
                     <span class="circle"></span>
                     <span> @survey.StartDate.ToString("dd-MM-yyyy")</span>
@@ -96,14 +103,11 @@
                         }
 
                     </form>
-
                 </div>
             </div>
-
         </div>
     }
 }
-
 <div class="modal fade" id="viewSurveyReport" tabindex="-1" aria-labelledby="viewSurveyReportModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">

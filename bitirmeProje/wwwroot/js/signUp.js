@@ -47,6 +47,7 @@ document.getElementById('city').addEventListener('change', function () {
     });
 });
 async function SignUp(event) {
+    debugger
     //#region Create
     event.preventDefault();
     var form = document.getElementById("sign-up-form");

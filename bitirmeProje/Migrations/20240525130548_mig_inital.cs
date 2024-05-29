@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace bitirmeProje.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class mig_inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,7 @@ namespace bitirmeProje.Migrations
                     group_owner_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     group_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     group_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    image_url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     @private = table.Column<bool>(name: "private", type: "bit", nullable: false),
                     can_create_survey = table.Column<bool>(type: "bit", nullable: false),
                     is_active = table.Column<bool>(type: "bit", nullable: false)
@@ -234,6 +234,7 @@ namespace bitirmeProje.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     survey_tittle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     survey_description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    created_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     is_active = table.Column<bool>(type: "bit", nullable: false),

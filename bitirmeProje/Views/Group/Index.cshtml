@@ -21,14 +21,20 @@
     <div class="profile_info">
         <div class="cart">
             <div class="img">
-                <img src="/images/profile_img.jpg" alt="">
+                @if(string.IsNullOrEmpty(group.ImageUrl)){
+                    <img src="/groupImage/group-photo.jpg" alt="" class="fixed-size-image-80">
+                } 
+                else
+                {
+                    <img src="@group.ImageUrl" alt="Group Image" class="fixed-size-image-80">
+                }
             </div>
             <div class="info">
                 <p class="name">
                     @group.GroupName
                     @if (Role.RoleName == "Yönetici")
                     {
-                        <button class="edit_profile">
+                        <button class="edit_profile" data-bs-toggle="modal" data-bs-target="#addGroupModal">
                             Profili Düzenle
                         </button>
                     }
@@ -88,7 +94,7 @@
                             </div>
 
                             <div class="posts">
-                                @await Component.InvokeAsync("SurveyComponent", null)
+                                @await Component.InvokeAsync("SurveyComponent", @group.Id)
                             </div>
                         </div>
                     </div>
@@ -108,7 +114,14 @@
                                             <div class="cart">
                                                 <div>
                                                     <div class="img">
-                                                        <img src="/images/profile_img.jpg" alt="Profile Image">
+                                                        @if (string.IsNullOrEmpty(item.ImageUrl))
+                                                        {
+                                                            <img src="/userImage/user-image.jpg" alt="User Image" class="fixed-size-image-60">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@item.ImageUrl" alt="User Image" class="fixed-size-image-60">
+                                                        }
                                                     </div>
                                                     <div class="flex justify-between-center">
                                                         <p class="name">@item.Name @item.Surname</p>
@@ -152,7 +165,14 @@
                                             <div class="cart">
                                                 <div>
                                                     <div class="img">
-                                                        <img src="/images/profile_img.jpg" alt="Profile Image">
+                                                        @if (string.IsNullOrEmpty(item.ImageUrl))
+                                                        {
+                                                            <img src="/userImage/user-image.jpg" alt="User Image" class="fixed-size-image-60">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@item.ImageUrl" alt="User Image" class="fixed-size-image-60">
+                                                        }
                                                     </div>
                                                     <div class="flex justify-between-center">
                                                         <p class="name">@item.Name @item.Surname</p>
@@ -191,11 +211,75 @@
 
             </div>
         </div>
+        <!--Create Group model-->
+        <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between"
+                            id="exampleModalLabel">
+                            <span class="title_create" id="addGroupModalLabel">GRUP DÜZENLE</span>
+                        </h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="group-update-form" onsubmit="return GroupUpdate(event)">
+                            <input type="text" class="form-control" id="Id" name="Id" value="@group.Id" hidden required>
+                            <div class="preview" id="preview" onclick="document.getElementById('groupImage').click()">
+                                <!-- Resim yoksa bu metin görünür -->
+                                <span>Resim Yükle</span>
+                            </div>
+                            <input type="file" class="form-control" name="img" id="groupImage" accept="image/*" onchange="previewImage()">
+                            <input type="text" hidden class="form-control" name="ImageUrl" id="ImageUrl" value="@group.ImageUrl" accept="image/*">
+                            <button type="button" onclick="deleteImage()" class="form-control">Resmi Sil</button>
+
+                            <div class="form-group">
+                                <label for="group-name" class="col-form-label">Grup İsmi</label>
+                                <input type="text" class="form-control" id="group_name" name="GroupName" value="@group.GroupName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="group-description" class="col-form-label">Grup Açıklaması</label>
+                                <textarea class="form-control" id="group_description" name="GroupDescription" required>@group.GroupDescription</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="public_private">•Grup Herkese Açık Mı?</label><br>
+                                @if (group.Private)
+                                {
+                                    <input type="checkbox" id="public" name="Private" value="true" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="public" name="Private" value="true">
+                                }
+                                <label for="public">Herkese Açık</label><br>
+                            </div>
+                            <div class="form-group">
+                                <label for="admins_members">•Tüm üyeler anket oluşturabilir mi?</label><br>
+                                @if (group.CanCreateSurvey)
+                                {
+                                    <input type="checkbox" id="all-members" name="CanCreateSurvey" value="true" checked>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="all-members" name="CanCreateSurvey" value="true">
+                                }
+                                <label for="all-members">Evet,oluşturabilir.</label><br>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">KAPAT</button>
+                                <button type="submit" class="btn btn-primary">KAYDET</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
     else
     {
         <p>Bu grup gizli</p>
     }
+    
 </div>
 
 

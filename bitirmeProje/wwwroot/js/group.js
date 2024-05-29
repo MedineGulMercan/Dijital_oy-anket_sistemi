@@ -106,8 +106,10 @@ async function unsubscribeFromGroup(groupId) {
 //#region Grup Ekle 
 async function GroupCreate(event) {
     event.preventDefault();
+    //formdata ile formdan gelen bilgileri çekiyoruz.
     var form = document.getElementById("group-create-form");
     var formData = new FormData(form);
+    //Ajax ile GroupCreate methoduna istek atıyoruz.
     await $.ajax({
         url: '/Group/GroupCreate',
         type: 'POST',
@@ -117,7 +119,12 @@ async function GroupCreate(event) {
         contentType: false,
         success: function (data) {
             if (data.success) {
-                window.location.href = "/Home/Index?success=true&message=" + data.message;
+                $('#image-id-group').remove();
+                $('#groupImage').val("")
+                $('#group_name').val("")
+                $('#group_description').val("")
+                $("#addGroupModal").modal('hide');
+                success(data.message);
             }
             else {
                 error(data.message)
@@ -150,7 +157,7 @@ async function UserRequestApproval(button, userId, groupId) {
     await $.ajax({
         url: '/Group/UserRequestApproval',
         type: 'POST',
-        data: { userId: userId, groupId: groupId }, // POST isteği ile veri gönderin // JSON formatına dönüştür
+        data: { userId: userId, groupId: groupId },
         success: function (data) {
             if (data.success) {
                 var row = button.closest('tr');
@@ -168,7 +175,7 @@ async function UserRequestRejection(button,userId, groupId) {
     await $.ajax({
         url: '/Group/UserRequestRejection',
         type: 'POST',
-        data: { userId: userId, groupId: groupId }, // POST isteği ile veri gönderin // JSON formatına dönüştür
+        data: { userId: userId, groupId: groupId },
         success: function (data) {
             if (data.success) {
                 var row = button.closest('tr');
@@ -269,6 +276,7 @@ function previewImage() {
         preview.innerHTML = '';  /* Mevcut içeriği temizle */
         var img = document.createElement('img');
         img.src = e.target.result;  /* Resim içeriği */
+        img.id = "image-id-group"
         preview.appendChild(img);  /* Resmi ekle */
     };
 
@@ -276,23 +284,34 @@ function previewImage() {
         reader.readAsDataURL(file);  /* Resmi oku ve veri URL'sine dönüştür */
     }
 }
+async function GroupUpdate() {
+    event.preventDefault();
+    var form = document.getElementById("group-update-form");
+    var formData = new FormData(form);
 
-$(window).on("load", function () {
-    //var isHome = document.getElementById("homePage");
-    //console.log(isHome)
-    //if (isHome == null || isHome == "") {
-    //    // JavaScript
-    //    // Sidebar sınıfına sahip div'i seç
-    //    const sidebar = document.querySelector('.sidebar');
+    await $.ajax({
+        url: '/Group/GroupUpdate',
+        type: 'POST',
+        dataType: 'json',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            if (data.success) {
+                var groupId = formData.get("Id");
+                window.location.href = `/Group/Index?id=${groupId}&success=true&message=${data.message}`;
+            }
+            else {
+                error(data.message)
+            }
+        }
+    });
+}
 
-    //    // Eğer div bulunduysa, onu sil
-    //    if (sidebar) {
-    //        sidebar.remove(); // div'i DOM'dan kaldırır
-    //        // veya
-    //        // sidebar.parentNode.removeChild(sidebar); // farklı bir yöntemle div'i siler
-    //    }
-    //}
-});
+function deleteImage() {
+    $('#ImageUrl').val("");
+}
+
 
 
 

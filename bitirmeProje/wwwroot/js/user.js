@@ -20,3 +20,7 @@
         }
     });
 }
+
+function deleteImage() {
+    $('#ImageUrl').val("");
+}

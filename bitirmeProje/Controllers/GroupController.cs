@@ -2,11 +2,14 @@
 using bitirmeProje.Domain.IRepositories;
 using bitirmeProje.Dto;
 using bitirmeProje.Helper.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace bitirmeProje.Controllers
 {
+    [Authorize]
     public class GroupController : Controller
     {
         private readonly IGroupRepository _groupRepository;
@@ -17,8 +20,9 @@ namespace bitirmeProje.Controllers
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
         private readonly IOptionRepository _optionRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public GroupController(IGroupRepository groupRepository, ILoginUserHelper loginUserHelper, IGroupUserRepository groupUserRepository, IRoleRepository roleRepository, ISurveyRepository surveyRepository, IQuestionRepository questionRepository, IUserRepository userRepository, IOptionRepository optionRepository)
+        public GroupController(IGroupRepository groupRepository, ILoginUserHelper loginUserHelper, IGroupUserRepository groupUserRepository, IRoleRepository roleRepository, ISurveyRepository surveyRepository, IQuestionRepository questionRepository, IUserRepository userRepository, IOptionRepository optionRepository, IWebHostEnvironment webHostEnvironment)
         {
             _groupRepository = groupRepository;
             _loginUserHelper = loginUserHelper;
@@ -28,32 +32,12 @@ namespace bitirmeProje.Controllers
             _questionRepository = questionRepository;
             _userRepository = userRepository;
             _optionRepository = optionRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index(Guid id)
         {
             var userId = _loginUserHelper.GetLoginUserId();
-            //var data = await (from gr in _groupRepository.GetAll(x => x.Id == id)
-            //                  join sr in _surveyRepository.GetAll(x => true) on gr.Id equals sr.GroupId
-            //                  join qs in _questionRepository.GetAll(x => true) on sr.QuestionId equals qs.Id
-            //                  //join gu in _groupUserRepository.GetAll(x=>true) on gr.Id equals gu.GroupId 
-            //                  //join u in _userRepository.GetAll(x=>true) on gu.UserId equals u.Id
-            //                  select new SurveyInfoDto
-            //                  {
-            //                      GroupId = id,
-            //                      QuestionId = qs.Id,
-            //                      GroupName = gr.GroupName,
-            //                      GroupDescription = gr.GroupDescription,
-            //                      CanCreateSurvey = gr.CanCreateSurvey,
-            //                      Private = gr.Private,
-            //                      SurveyQuestion = qs.SurveyQuestion,
-            //                      SurveyDescription = sr.SurveyDescription,
-            //                      StartDate = sr.StartDate,
-            //                      SurveyTittle = sr.SurveyTittle,
-            //                      EndDate = sr.EndDate,
-            //                  }).ToListAsync();
-            //data.ForEach(x => x.SurveyOptions = _optionRepository.GetAll(x => x.QuestionId == x.QuestionId));
-
             var groupOwner = await _groupUserRepository.FirstOrDefaultAsync(x => x.GroupId == id && x.UserId == userId);
             ViewBag.AllGroupUsers = await GetAllGroupUsers(id);
             ViewBag.Role = groupOwner != null ? await _roleRepository.FirstOrDefaultAsync(x => x.Id == groupOwner.RoleId) : new Role();
@@ -84,6 +68,7 @@ namespace bitirmeProje.Controllers
                         Id = user.Id,
                         Name = user.Name,
                         Surname = user.Surname,
+                        ImageUrl = user.ImageUrl,
                     });
                 }
             }
@@ -95,12 +80,30 @@ namespace bitirmeProje.Controllers
         }
         #endregion
         [HttpPost]
-        public async Task<IActionResult> GroupCreate(Group group)
+        public async Task<IActionResult> GroupCreate(Group group, IFormFile img)
         {
-            var userId = _loginUserHelper.GetLoginUserId();
+            var userId = _loginUserHelper.GetLoginUserId();// Giriş yapan kullanıcı ID'sini alır
             group.GroupOwnerId = userId;
-            group.IsActive = true;
-            group.ImageUrl = "asd";
+            group.IsActive = true; // Grubu aktif olarak işaretler
+            group.ImageUrl = "";
+            if (img != null)
+            {
+                // wwwroot yolunu alır
+                var rootPath = _webHostEnvironment.WebRootPath;
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(img.FileName); // Uzantı olmadan dosya adı
+                var fileExtension = Path.GetExtension(img.FileName); // Dosya uzantısı
+                // Dosyanın kaydedileceği yolu oluşturur                                            
+                var filePath = Path.Combine(rootPath, "groupImage", fileNameWithoutExtension + "-" + userId.ToString() + fileExtension);
+                // Dosya dizininin var olduğundan emin olur
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                // Dosya akışı oluşturur ve dosyayı kaydeder
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);// Dosyayı asenkron olarak kopyalar
+                }
+                // Grup resmi URL'sini ayarlar
+                group.ImageUrl = "/groupImage/" + fileNameWithoutExtension + "-" + userId.ToString() + fileExtension;
+            }
             var groups = await _groupRepository.CreateAsync(group);
             var role = await _roleRepository.FirstOrDefaultAsync(x => x.RoleName == "Yönetici");
             await _groupUserRepository.CreateAsync(new GroupUser
@@ -126,10 +129,10 @@ namespace bitirmeProje.Controllers
             {
                 return BadRequest("Query cannot be empty");
             }
-
+      //grup isimlerinin küçük harfe çevrilip, arama sorgusunu içerip içermediği kontrol edilir.
             var results = _groupRepository
     .GetAll(g => g.GroupName.ToLower().Contains(q.ToLower())) // SQL'e çevrilebilir
-    .Select(g => new { g.Id, g.GroupName })
+    .Select(g => new { g.Id, g.GroupName,g.ImageUrl })
     .ToList();
 
             return Json(results);
@@ -265,14 +268,15 @@ namespace bitirmeProje.Controllers
         }
         public async Task<IActionResult> UserRequestRejection(Guid userId, Guid groupId)
         {
+            //Kişi ve üye olduğu grubun bilgileri çekilir 
             var data = await _groupUserRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.GroupId == groupId);
             if (data != null)
             {
-                await _groupUserRepository.DeleteAsync(data);
+                await _groupUserRepository.DeleteAsync(data);// Kişi grup üyeliğinden çıkarılır/silinir
                 return Json(new Response<GroupUser>
                 {
                     Success = true,
-                    Message = "Başarılı",
+                    Message = "Kişinin üyeliği iptal edildi",
                     Result = data
                 });
             }
@@ -294,24 +298,28 @@ namespace bitirmeProje.Controllers
                                          Surname = u.Surname,
                                          RoleName = ro.RoleName,
                                          UserId = u.Id,
+                                         ImageUrl = u.ImageUrl
                                      }).ToListAsync();
             return userAndRole;
         }
         public async Task<IActionResult> MakeGroupAdmin(Guid userId, Guid groupId)
         {
+            //Role tablosundan yönetici rolünün id'si çekilir
             var role = _roleRepository.FirstOrDefaultAsync(x => x.RoleName == "Yönetici").Result;
+            //Yönetici yapılmak istenen kişi ve grubun bilgileri çekilir
             var groupUser = await _groupUserRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.GroupId == groupId);
 
             if (role != null)
             {
                 if (groupUser != null)
                 {
+                    //Kişinin rolü Üye -> Yönetici olarak güncellenir
                     groupUser.RoleId = role.Id;
                     await _groupUserRepository.UpdateAsync(groupUser);
                     return Json(new Response<GroupUser>
                     {
                         Success = true,
-                        Message = "Başarılı",
+                        Message = "Kişi grup yönetici olarak ayarlandı.",
                         Result = groupUser
                     });
                 }
@@ -324,13 +332,17 @@ namespace bitirmeProje.Controllers
         }
         public async Task<IActionResult> TakeGroupAdmin(Guid userId, Guid groupId)
         {
+            //Role tablosundan yönetici rolünün id'si çekilir
             var role = _roleRepository.FirstOrDefaultAsync(x => x.RoleName == "Üye").Result;
+            //Yönetici yapılmak istenen kişi ve grubun bilgileri çekilir
             var groupUser = await _groupUserRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.GroupId == groupId);
 
             if (role != null)
             {
                 if (groupUser != null)
                 {
+                    //Kişinin rolü Yönetici -> Üye olarak güncellenir
+
                     groupUser.RoleId = role.Id;
                     await _groupUserRepository.UpdateAsync(groupUser);
                     return Json(new Response<GroupUser>
@@ -347,7 +359,52 @@ namespace bitirmeProje.Controllers
                 Message = "Başarısız",
             });
         }
+        [HttpPost]
+        public async Task<IActionResult> GroupUpdate(IFormFile img, Group group)
+        {
+            var data = await _groupRepository.FirstOrDefaultAsync(x => x.Id == group.Id);
+            if (data != null)
+            {
+                var path = "";
+                if (img != null)
+                {
+                    // wwwroot path
+                    var rootPath = _webHostEnvironment.WebRootPath;
+                    var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(img.FileName); // Uzantı olmadan dosya adı
+                    var fileExtension = Path.GetExtension(img.FileName); // Dosya uzantısı
+                                                                         // Path to save the uploaded file
+                    var filePath = Path.Combine(rootPath, "groupImage", fileNameWithoutExtension + "-" + group.Id.ToString() + fileExtension);
+                    // Ensure the uploads directory exists
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+                    path = "/groupImage/" + fileNameWithoutExtension + "-" + group.Id.ToString() + fileExtension;
+                }
 
+                if (data != null)
+                {
+                    data.GroupName = group.GroupName;
+                    data.GroupDescription = group.GroupDescription;
+                    data.ImageUrl = img != null ? path : group.ImageUrl;
+                    data.Private = group.Private;
+                    data.CanCreateSurvey = group.CanCreateSurvey;
+                    await _groupRepository.UpdateAsync(data);
+                }
+                return Json(new Response<Group>
+                {
+                    Success = true,
+                    Message = "Kayıt Başarılı",
+                    Result = data
+                });
+            }
+            return Json(new Response<Group>
+            {
+                Success = false,
+                Message = "Kayıt Başarısız",
+            });
+        }
 
     }
 }

@@ -15,8 +15,9 @@ namespace bitirmeProje.ViewComponents
         private readonly IQuestionRepository _questionRepository;
         private readonly IOptionRepository _optionRepository;
         private readonly IVoteRepository _voteRepository;
+        private readonly IUserRepository _userRepository;
 
-        public SurveyComponent(ILoginUserHelper loginUserHelper, IGroupUserRepository groupUserRepository, IGroupRepository groupRepository, ISurveyRepository surveyRepository, IQuestionRepository questionRepository, IOptionRepository optionRepository, IVoteRepository voteRepository)
+        public SurveyComponent(ILoginUserHelper loginUserHelper, IGroupUserRepository groupUserRepository, IGroupRepository groupRepository, ISurveyRepository surveyRepository, IQuestionRepository questionRepository, IOptionRepository optionRepository, IVoteRepository voteRepository, IUserRepository userRepository)
         {
             _loginUserHelper = loginUserHelper;
             _groupUserRepository = groupUserRepository;
@@ -25,6 +26,7 @@ namespace bitirmeProje.ViewComponents
             _questionRepository = questionRepository;
             _optionRepository = optionRepository;
             _voteRepository = voteRepository;
+            _userRepository = userRepository;
         }
         public IViewComponentResult Invoke(Guid? groupId)
         {
@@ -39,6 +41,7 @@ namespace bitirmeProje.ViewComponents
                              {
                                  QuestionId = qs.Id,
                                  GroupName = gr.GroupName,
+                                 CreatedDate = sr.CreatedDate,
                                  GroupDescription = gr.GroupDescription,
                                  GroupId = gu.GroupId,
                                  CanCreateSurvey = gr.CanCreateSurvey,
@@ -49,6 +52,7 @@ namespace bitirmeProje.ViewComponents
                                  StartDate = sr.StartDate,
                                  SurveyTittle = sr.SurveyTittle,
                                  EndDate = sr.EndDate,
+                                 ImageUrl = gr.ImageUrl
                              }).ToListAsync().Result;
 
                 foreach (var question in datax)
@@ -72,16 +76,19 @@ namespace bitirmeProje.ViewComponents
                     }
                     question.SurveyOptions = options;
                 }
-                ViewBag.SurveyInfo = datax;
+                var result = datax.OrderByDescending(x => x.CreatedDate).ToList();
+                ViewBag.SurveyInfo = result;
             }
             else
             {
+                //Grubun anketlerini ve anket sorularını çekiyoruz.
                 var datax = (from g in _groupRepository.GetAll(x => x.Id == groupId)
                              join sr in _surveyRepository.GetAll(x => true) on g.Id equals sr.GroupId
                              join qu in _questionRepository.GetAll(x => true) on sr.QuestionId equals qu.Id
                              select new SurveyInfoDto
                              {
                                  QuestionId = qu.Id,
+                                 CreatedDate = sr.CreatedDate,
                                  GroupName = g.GroupName,
                                  GroupDescription = g.GroupDescription,
                                  GroupId = g.Id,
@@ -95,7 +102,7 @@ namespace bitirmeProje.ViewComponents
                                  EndDate = sr.EndDate,
                              }).ToListAsync().Result;
                 foreach (var question in datax)
-                {
+                {   // Option tablosundan o grubun sorularının şıklarını çekiyoruz.
                     var options = _optionRepository.GetAll(w => w.QuestionId == question.QuestionId)
                         .Select(x => new SurveyOptionDto
                         {
@@ -106,7 +113,7 @@ namespace bitirmeProje.ViewComponents
                             SurveyOption=x.SurveyOption,
                         }).ToListAsync().Result;
                     foreach (var w in options)
-                    {
+                    {  //Kullanıcı daha önce oylamış mı diye kontrol ediyoruz
                         var isVote = _voteRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.OptionId == w.Id).Result;
                         if (isVote != null)
                         {
@@ -115,7 +122,8 @@ namespace bitirmeProje.ViewComponents
                     }
                     question.SurveyOptions = options;
                 }
-                ViewBag.SurveyInfo = datax;
+                var result = datax.OrderByDescending(x => x.CreatedDate).ToList();
+                ViewBag.SurveyInfo = result;
             }
             return View();
         }

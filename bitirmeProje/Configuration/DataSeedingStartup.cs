@@ -29,18 +29,6 @@ namespace bitirmeProje.Configuration
             {
                 await SeedGender(context);
             }
-            if (!context.Country.Any())
-            {
-                await SeedCountry(context);
-            }
-            if (!context.City.Any())
-            {
-                await SeedCity(context);
-            }
-            if (!context.District.Any())
-            {
-                await SeedDistrict(context);
-            }
             if (!context.Users.Any())
             {
                 await SeedUser(context);
@@ -57,10 +45,10 @@ namespace bitirmeProje.Configuration
             {
                 await SeedGroupUser(context);
             }
+            
             await context.SaveChangesAsync();
 
         }
-
         public async static Task SeedGroupUser(Context context)
         {
             await context.GroupUser.AddRangeAsync(new List<GroupUser>()
@@ -113,7 +101,7 @@ namespace bitirmeProje.Configuration
                     GroupDescription="Herkes üye",
                     CanCreateSurvey=true,
                     GroupOwnerId=Guid.Parse("7fb4fb3a-0751-45c6-9beb-793ea538db94"),
-                    ImageUrl="asd",
+                    ImageUrl="",
                     IsActive=true,
                 }
             });
@@ -127,11 +115,9 @@ namespace bitirmeProje.Configuration
                     Id=Guid.Parse("7fb4fb3a-0751-45c6-9beb-793ea538db94"),
                     Name="Medine Gül",
                     Surname="Mercan",
-                    Age=21,
                     Birthday=Convert.ToDateTime("12.07.2002"),
-                    DistrictId=Guid.Parse("34cf1f6d-fd5a-48e0-9997-221182e12f2a"),
                     GenderId=Guid.Parse("d6d23f37-cda6-47f3-9bef-c9722fb2d2ce"),
-                    ImageUrl="asd",
+                    ImageUrl="",
                     IsActive=true,
                     IsAdmin=true,
                     Mail="med@gmail.com",
@@ -144,11 +130,9 @@ namespace bitirmeProje.Configuration
                     Id=Guid.Parse("2cfaef38-2fd7-4bb0-9812-f33ad8dd0a08"),
                     Name="Osman",
                     Surname="Sivrikaya",
-                    Age=22,
                     Birthday=Convert.ToDateTime("11.11.2001"),
-                    DistrictId=Guid.Parse("a55adf8e-588d-44ef-abc0-57b80396f2ce"),
                     GenderId=Guid.Parse("2585ef28-f9e9-4ec0-82f5-bf04aea46a8c"),
-                    ImageUrl="asd",
+                    ImageUrl="",
                     IsActive=true,
                     IsAdmin=false,
                     Mail="osman@gmail.com",
@@ -157,87 +141,6 @@ namespace bitirmeProje.Configuration
                     PhoneNumber="55588877722",
                 },
 
-            });
-        }
-        public async static Task SeedDistrict(Context context)
-        {
-            await context.District.AddRangeAsync(new List<District>()
-            {
-                new District()
-                {
-                    Id=Guid.Parse("a55adf8e-588d-44ef-abc0-57b80396f2ce"),
-                    CityId=Guid.Parse("2e08dd2b-39b6-45a7-89bb-13fea2c9c061"),
-                    DistrictName="Kartal"
-
-                },
-                new District()
-                {
-                    Id=Guid.Parse("34cf1f6d-fd5a-48e0-9997-221182e12f2a"),
-                    CityId=Guid.Parse("2e08dd2b-39b6-45a7-89bb-13fea2c9c061"),
-                    DistrictName="Pendik"
-
-                },
-                new District()
-                {
-                    Id=Guid.Parse("b63b06d0-ad1e-4962-bc4f-436eec014973"),
-                  CityId=Guid.Parse("bc8c4ef1-2f84-4dd7-9643-3c7428d6d80d"),
-                  DistrictName="Çankaya"
-                },
-                new District()
-                {
-                    Id=Guid.Parse("fe743d59-368c-49c1-bb4d-da0bd56a9718"),
-                  CityId=Guid.Parse("817640ae-7afc-45bc-949a-2dbdfa49c261"),
-                  DistrictName="Mitte"
-
-                },
-                new District()
-                {
-                    Id=Guid.Parse("f27801e6-ca84-4d22-b523-60cc379d7df6"),
-                    CityId=Guid.Parse("bc8c4ef1-2f84-4dd7-9643-3c7428d6d80d"),
-                    DistrictName="Mamak"
-                },
-            });
-
-        }
-        public async static Task SeedCity(Context context)
-        {
-            await context.City.AddRangeAsync(new List<City>()
-            {
-                new City()
-                {
-                    Id=Guid.Parse("2e08dd2b-39b6-45a7-89bb-13fea2c9c061"),
-                    CountryId=Guid.Parse("0a6770f0-d446-42de-bf07-0b411b0fb298"),
-                    CityName="İstanbul"
-                },
-                new City()
-                {
-                    Id=Guid.Parse("bc8c4ef1-2f84-4dd7-9643-3c7428d6d80d"),
-                    CountryId=Guid.Parse("0a6770f0-d446-42de-bf07-0b411b0fb298"),
-                    CityName="Ankara"
-                },
-                new City()
-                {
-                    Id=Guid.Parse("817640ae-7afc-45bc-949a-2dbdfa49c261"),
-                    CountryId=Guid.Parse("4ce5bc87-329c-4b55-a59d-c9d226c13a38"),
-                    CityName="Berlin"
-                },
-            });
-        }
-        public async static Task SeedCountry(Context context)
-        {
-            await context.Country.AddRangeAsync(new List<Country>()
-            {
-
-                new Country
-                {
-                    Id=Guid.Parse("0a6770f0-d446-42de-bf07-0b411b0fb298"),
-                    CountryName="Türkiye"
-                },
-                 new Country
-                {
-                    Id=Guid.Parse("4ce5bc87-329c-4b55-a59d-c9d226c13a38"),
-                    CountryName="Almanya"
-                }
             });
         }
         public async static Task SeedGender(Context context)
