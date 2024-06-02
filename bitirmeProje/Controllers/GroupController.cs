@@ -41,7 +41,6 @@ namespace bitirmeProje.Controllers
             var groupOwner = await _groupUserRepository.FirstOrDefaultAsync(x => x.GroupId == id && x.UserId == userId);
             ViewBag.AllGroupUsers = await GetAllGroupUsers(id);
             ViewBag.Role = groupOwner != null ? await _roleRepository.FirstOrDefaultAsync(x => x.Id == groupOwner.RoleId) : new Role();
-            //ViewBag.GroupInfo = data;
             ViewBag.User = userId;
             ViewBag.Group = await _groupRepository.FirstOrDefaultAsync(x => x.Id == id);
             ViewBag.IsMember = await _groupUserRepository.FirstOrDefaultAsync(x => x.GroupId == id && x.UserId == userId);
@@ -243,10 +242,12 @@ namespace bitirmeProje.Controllers
         }
         public async Task<IActionResult> UserRequestApproval(Guid userId, Guid groupId)
         {
+            //İstek atan kişi ve grup bilgileri çekilir
             var data = await _groupUserRepository.FirstOrDefaultAsync(x => x.UserId == userId && x.GroupId == groupId);
             if (data != null)
             {
                 {
+                    // Kişinin üye mi bilgisi true olarak güncellenir
                     data.IsActive = true;
                     data.IsMember = true;
                     await _groupUserRepository.UpdateAsync(data);

@@ -218,7 +218,7 @@
                     <div class="modal-header">
                         <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between"
                             id="exampleModalLabel">
-                            <span class="title_create" id="addGroupModalLabel">GRUP DÜZENLE</span>
+                            <span class="title_create" id="addGroupModalLabel">GRUP</span>
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
@@ -227,7 +227,7 @@
                             <input type="text" class="form-control" id="Id" name="Id" value="@group.Id" hidden required>
                             <div class="preview" id="preview" onclick="document.getElementById('groupImage').click()">
                                 <!-- Resim yoksa bu metin görünür -->
-                                <span>Resim Yükle</span>
+                                <span>Profil Resim Yükle</span>
                             </div>
                             <input type="file" class="form-control" name="img" id="groupImage" accept="image/*" onchange="previewImage()">
                             <input type="text" hidden class="form-control" name="ImageUrl" id="ImageUrl" value="@group.ImageUrl" accept="image/*">

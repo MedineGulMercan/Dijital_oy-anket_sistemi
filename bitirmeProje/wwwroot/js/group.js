@@ -21,29 +21,30 @@ async function checkMembershipStatus(groupId) {
         // Üyelik durumu bilgisini alıyoruz
         const membershipStatus = response.membershipStatus;
 
-        // Butonun metnini ve durumunu üyelik durumuna göre ayarlayın
+        //Butonun texti üyesiniz iken tıklandı ise üyelikten çıkma methoduna yönlendirir
         const button = document.getElementById('membershipButton');
         if (membershipStatus === 'approved') {
             button.innerText = 'Üyesiniz';
             button.disabled = false;
-            button.onclick = function () { // Butona tıklandığında onay mesajı göster
+            button.onclick = function () {  
                 confirmUnsubscribe();
             };
 
         }
-
+        //Butona istek gönderdikten sonra tekrar tıklarsa üyelikten çıkma methoduna yönlendirir 
         else if (membershipStatus === 'pending') {
             button.innerText = 'İstek Gönderildi';
             button.disabled = false;
-            button.onclick = function () { // Butona tıklandığında onay mesajı göster
+            button.onclick = function () { 
                 confirmUnsubscribe();
             };
         }
         else {
+            //Üye ol iken tıklarsa üye olma methoduna yönlendirir
             button.innerText = 'Üye Ol';
             button.disabled = false;
             button.onclick = function () {
-                MemberRequest(groupId); // İşlevi doğru şekilde bağlayın
+                MemberRequest(groupId); 
             };
         }
     } catch (error) {
