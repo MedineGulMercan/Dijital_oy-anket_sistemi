@@ -4,6 +4,7 @@ namespace bitirmeProje.Dto
 {
     public class SurveyInfoDto
     {
+        public Guid Id { get; set; }
         public string SurveyQuestion { get; set; }
         public string SurveyTittle { get; set; }
 

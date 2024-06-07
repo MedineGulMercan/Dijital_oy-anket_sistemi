@@ -19,7 +19,7 @@ namespace bitirmeProje.Controllers
         private readonly IGroupRepository _groupRepository;
         private readonly IRoleRepository _roleRepository;
 
-        public SignUpController(IGenderRepository genderRepository,UserRepository userRepository, IGroupUserRepository groupUserRepository, IGroupRepository groupRepository, IRoleRepository roleRepository)
+        public SignUpController(IGenderRepository genderRepository, IUserRepository userRepository, IGroupUserRepository groupUserRepository, IGroupRepository groupRepository, IRoleRepository roleRepository)
         {
             _genderRepository = genderRepository;
             _userRepository = userRepository;

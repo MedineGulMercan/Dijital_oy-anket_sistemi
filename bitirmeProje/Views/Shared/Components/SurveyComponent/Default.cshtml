@@ -2,17 +2,43 @@
 @{
     var surveyInfoList = ViewBag.SurveyInfo as List<SurveyInfoDto>;
 }
+<style>
+    .more {
+        position: relative;
+        display: inline-block;
+    }
+
+    .delete-button {
+        display: none;
+        position: absolute;
+        top: 30px; /* Butonun resmin altına yerleşmesini sağla */
+        left: 0;
+        background-color: white;
+        color: black;
+        border: 2px solid black;
+        padding: 5px 10px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+        .delete-button.show {
+            display: block;
+            opacity: 1;
+        }
+</style>
+
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
     google.charts.load('current', { 'packages': ['corechart'] });
     google.charts.setOnLoadCallback(drawChart);
-
 </script>
+
 @if (surveyInfoList != null)
 {
     @foreach (var survey in surveyInfoList)
     {
-        <div class="post border p-3">
+        <div class="post border p-3" id="survey-@survey.Id">
             <div class="info">
                 <div class="person">
                     @if (string.IsNullOrEmpty(survey.ImageUrl))
@@ -28,9 +54,13 @@
                     <span> @survey.StartDate.ToString("dd-MM-yyyy")</span>
                     <span> / @survey.EndDate.ToString("dd-MM-yyyy")</span>
                 </div>
-                <div class="more">
-                    <img src="/images/show_more.png" alt="show more">
-                </div>
+                @if (survey.UserId == ViewBag.UserId)
+                {
+                    <div class="more">
+                        <img src="/images/show_more.png" alt="show more" class="showMoreImg">
+                        <button class="delete-button" onclick="deleteSurvey('@survey.Id')">Sil</button>
+                    </div>
+                }
             </div>
             <div class="image">
                 <div>
@@ -61,7 +91,6 @@
                                             else
                                             {
                                                 <input type="radio" name="@($"survey_{survey.QuestionId}")" id="@($"{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
-
                                             }
                                         }
                                         else
@@ -73,11 +102,9 @@
                                             else
                                             {
                                                 <input type="radio" disabled name="@($"survey_{survey.QuestionId}")" id="@($"{option.Id}")" value="@option.SurveyOption" class="form-radio text-blue-600" />
-
                                             }
                                         }
                                         <label for="@($"option_{option.Id}")" class="text-gray-700">@option.SurveyOption</label>
-
                                     </div>
                                 }
                             }
@@ -101,7 +128,6 @@
                         {
                             <input type="button" onclick="openReport('@survey.QuestionId')" class="btn btn-primary form-control" value="Anket Sonuçlarını Görüntüle" />
                         }
-
                     </form>
                 </div>
             </div>
@@ -112,8 +138,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between"
-                    id="exampleModalLabel">
+                <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between" id="exampleModalLabel">
                     <span class="title_create" id="viewSurveyReportModalLabel">ANKET RAPORU</span>
                     <button class="next_btn_post btn_link"></button>
                 </h1>
@@ -127,3 +152,33 @@
 </div>
 <script src="~/js/SurveyComponent.js"></script>
 
+<script>
+    // Document ready function
+    document.addEventListener('DOMContentLoaded', function () {
+        // Select all 'show more' images
+        var showMoreImgs = document.querySelectorAll('.showMoreImg');
+        // Add click event to each 'show more' image
+        showMoreImgs.forEach(function (img) {
+            img.addEventListener('click', function () {
+                var deleteButton = this.nextElementSibling;
+                if (deleteButton.style.display === 'none' || deleteButton.style.display === '') {
+                    deleteButton.style.display = 'block';
+                    deleteButton.classList.add('show');
+                } else {
+                    deleteButton.style.display = 'none';
+                    deleteButton.classList.remove('show');
+                }
+            });
+        });
+
+        // Select all 'delete' buttons
+        var deleteButtons = document.querySelectorAll('.delete-button');
+        // Add click event to each 'delete' button
+        deleteButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                this.style.display = 'none';
+                this.classList.remove('show');
+            });
+        });
+    });
+</script>

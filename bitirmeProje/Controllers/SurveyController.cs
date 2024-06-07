@@ -69,16 +69,16 @@ namespace bitirmeProje.Controllers
                 CreatedDate = DateTime.Now,
             });
             //Option tablosuna ankete eklenen şıkları sorunun ıd'siyle birlikte ekler.
-                foreach (var item in surveyDto.SurveyOptions) // Anket şıkları üzerinde döngü
+            foreach (var item in surveyDto.SurveyOptions) // Anket şıkları üzerinde döngü
             {
-                    await _optionRepository.CreateAsync(new Option
-                    {
-                        QuestionId = data.Id,
-                        Is_Active = true,
-                        SurveyOption = item.SurveyOption,
-                        Image_Url = false,
-                    });
-                }
+                await _optionRepository.CreateAsync(new Option
+                {
+                    QuestionId = data.Id,
+                    Is_Active = true,
+                    SurveyOption = item.SurveyOption,
+                    Image_Url = false,
+                });
+            }
             return Json(new Response<Survey>
             {
                 Success = true,
@@ -98,7 +98,7 @@ namespace bitirmeProje.Controllers
                 var options = _optionRepository.GetAll(x => x.QuestionId == questionId);
                 foreach (var item in options)
                 {   //Daha önce oyladıysa kayıt tekrarı olmaması için siliyoruz 
-                    var optionVote = await _voteRepository.FirstOrDefaultAsync(x => x.OptionId == item.Id && x.UserId==userId);
+                    var optionVote = await _voteRepository.FirstOrDefaultAsync(x => x.OptionId == item.Id && x.UserId == userId);
                     if (optionVote != null)
                     {
                         await _voteRepository.DeleteAsync(optionVote);
@@ -143,11 +143,36 @@ namespace bitirmeProje.Controllers
             {
                 list.Add(new SurveyReportDto
                 {
-                    Name = questionOptions.FirstOrDefault(x=>x.Id == item.OptionId).SurveyOption,// // Seçenek adı
+                    Name = questionOptions.FirstOrDefault(x => x.Id == item.OptionId).SurveyOption,// // Seçenek adı
                     Count = item.Count //// Oy sayısı
                 });
             }
             return Json(list);//// JSON formatında yanıt döner
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteSurvey(Guid surveyId)
+        {
+            //Gelen QuestionId ye göre anketi çekiyoruz.
+            var survey = await _surveyRepository.FirstOrDefaultAsync(x => x.Id == surveyId);
+
+            if (survey != null)
+            {
+                survey.IsActive = false;
+                await _surveyRepository.UpdateAsync(survey);
+
+                return Json(new Response<Survey>
+                {
+                    Success = true,
+                    Message = "Anket Silindi",
+                });
+            }
+
+            return Json(new Response<Survey>
+            {
+                Success = false,
+                Message = "Anket Silinemedi",
+            });
+
         }
     }
 }

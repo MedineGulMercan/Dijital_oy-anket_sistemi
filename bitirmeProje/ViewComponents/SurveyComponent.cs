@@ -30,15 +30,17 @@ namespace bitirmeProje.ViewComponents
         }
         public IViewComponentResult Invoke(Guid? groupId)
         {
+            ViewBag.UserId = _loginUserHelper.GetLoginUserId();
             var userId = _loginUserHelper.GetLoginUserId();
             if (groupId == null)
             {
                 var datax = (from gu in _groupUserRepository.GetAll(x => x.UserId == userId)
                              join gr in _groupRepository.GetAll(x => true) on gu.GroupId equals gr.Id
-                             join sr in _surveyRepository.GetAll(x => true) on gr.Id equals sr.GroupId
+                             join sr in _surveyRepository.GetAll(x => x.IsActive) on gr.Id equals sr.GroupId
                              join qs in _questionRepository.GetAll(x => true) on sr.QuestionId equals qs.Id
                              select new SurveyInfoDto
                              {
+                                 Id = sr.Id,
                                  QuestionId = qs.Id,
                                  GroupName = gr.GroupName,
                                  CreatedDate = sr.CreatedDate,
@@ -46,7 +48,7 @@ namespace bitirmeProje.ViewComponents
                                  GroupId = gu.GroupId,
                                  CanCreateSurvey = gr.CanCreateSurvey,
                                  Private = gr.Private,
-                                 UserId = userId,
+                                 UserId = sr.UserId,
                                  SurveyQuestion = qs.SurveyQuestion,
                                  SurveyDescription = sr.SurveyDescription,
                                  StartDate = sr.StartDate,
@@ -83,10 +85,11 @@ namespace bitirmeProje.ViewComponents
             {
                 //Grubun anketlerini ve anket sorularını çekiyoruz.
                 var datax = (from g in _groupRepository.GetAll(x => x.Id == groupId)
-                             join sr in _surveyRepository.GetAll(x => true) on g.Id equals sr.GroupId
+                             join sr in _surveyRepository.GetAll(x => x.IsActive) on g.Id equals sr.GroupId
                              join qu in _questionRepository.GetAll(x => true) on sr.QuestionId equals qu.Id
                              select new SurveyInfoDto
                              {
+                                 Id = sr.Id,
                                  QuestionId = qu.Id,
                                  CreatedDate = sr.CreatedDate,
                                  GroupName = g.GroupName,

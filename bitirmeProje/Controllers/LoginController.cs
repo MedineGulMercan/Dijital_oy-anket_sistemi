@@ -4,9 +4,7 @@ using bitirmeProje.Dto;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Security.Claims;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace bitirmeProje.Controllers
 {
@@ -39,10 +37,10 @@ namespace bitirmeProje.Controllers
                 });
             }
 
-            var claims = new List<Claim>
+            var claims = new List<Claim>()
                 {
                 new Claim(ClaimTypes.Name, loginUserData.Username),
-                    new Claim(ClaimTypes.Role, loginUserData.IsAdmin?"admin":"user"),
+                    new Claim(ClaimTypes.Role, loginUserData.IsAdmin ?"admin" : "user"),
                     new Claim(ClaimTypes.NameIdentifier,loginUserData.Id.ToString()),//claimin içine kullanıcının id sini kaydettik, artık istediğimiz her yerden erişebiliriz.
                 };
             var userIdentity = new ClaimsIdentity(claims, "Login");
