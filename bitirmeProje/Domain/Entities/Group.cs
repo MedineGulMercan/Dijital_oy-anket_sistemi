@@ -22,7 +22,7 @@ namespace bitirmeProje.Domain.Entities
         public string GroupDescription{ get; set; }
 
         [Column("image_url", TypeName = "nvarchar(max)")]
-        public string ImageUrl{ get; set; }
+        public string? ImageUrl{ get; set; }
 
         [Required]
         [Column("private")]

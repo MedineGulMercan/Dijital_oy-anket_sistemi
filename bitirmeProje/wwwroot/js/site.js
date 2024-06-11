@@ -108,3 +108,40 @@ if (urlDocReadyParams.toString()) {
 
 //url güncelleniyor
 history.replaceState({}, document.title, newDocReadySiteUrl);
+
+function logout() {
+    // Ajax isteği ile ilçe verilerini al
+    $.ajax({
+        url: '/Login/UserLogout', // İlçe verilerini döndüren action methodunun URL'si
+        type: 'POST',
+        success: function () {
+            window.location.href = "/Login/Index";
+        }
+    });
+}
+
+function deleteAddGroupPhoto() {
+    debugger
+    $('#preview').empty()
+    $('#image-id-group').remove();
+    $('#preview').append('<span>Resim Yükle</span>')
+    $('#groupImageLayout').val("");
+}
+
+function previewImageLayout() {
+    var file = document.getElementById('groupImageLayout').files[0];  /* Seçilen dosya */
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+        var preview = document.getElementById('preview');
+        preview.innerHTML = '';  /* Mevcut içeriği temizle */
+        var img = document.createElement('img');
+        img.src = e.target.result;  /* Resim içeriği */
+        img.id = "image-id-group"
+        preview.appendChild(img);  /* Resmi ekle */
+    };
+
+    if (file) {
+        reader.readAsDataURL(file);  /* Resmi oku ve veri URL'sine dönüştür */
+    }
+}

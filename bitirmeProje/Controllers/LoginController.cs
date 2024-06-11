@@ -54,5 +54,16 @@ namespace bitirmeProje.Controllers
                 Result = loginUserData
             });
         }
+        [HttpPost]
+        public async Task<IActionResult> UserLogout()
+        {
+            await HttpContext.SignOutAsync(); // Kullanıcının oturumunu sonlandırır.
+
+            return Json(new Response<object>
+            {
+                Success = true,
+                Message = "Çıkış Yapıldı"
+            });
+        }
     }
 }

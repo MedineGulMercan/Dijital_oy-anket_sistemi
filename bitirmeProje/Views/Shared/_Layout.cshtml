@@ -66,13 +66,6 @@
                                     <span class="d-none d-lg-block search">Ara </span>
                                 </a>
                             </li>
-                        
-                            <li class="notification_icon">
-                                <a href="#">
-                                    <img src="/images/love.png">
-                                    <span class="d-none d-lg-block ">Bildirimler</span>
-                                </a>
-                            </li>
                             <li>
                                 <a href="#" data-bs-toggle="modal" data-bs-target="#addGroupModal">
                                     <i class="fa-solid fa-users"></i>
@@ -93,7 +86,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/Login/Index">
+                                <a href="#" onclick="logout()">
                                     <i class="fa-solid fa-right-from-bracket"></i>
                                     <span class="d-none d-lg-block">&nbsp;&nbsp;Çıkış Yap</span>
                                 </a>
@@ -493,11 +486,12 @@
                     </div>
                     <div class="modal-body">
                         <form id="group-create-form" onsubmit="return GroupCreate(event)">
-                            <div class="preview" id="preview" onclick="document.getElementById('groupImage').click()">
+                            <div class="preview" id="preview" onclick="document.getElementById('groupImageLayout').click()">
                                 <!-- Resim yoksa bu metin görünür -->
                                 <span>Resim Yükle</span>
                             </div>
-                            <input type="file" class="form-control" name="img" id="groupImage" accept="image/*" onchange="previewImage()">
+                            <input type="file" class="form-control" name="img" id="groupImageLayout" accept="image/*" onchange="previewImageLayout()">
+                            <button type="button" onclick="deleteAddGroupPhoto()" class="form-control">Resmi Sil</button>
 
                             <div class="form-group">
                                 <label for="group-name" class="col-form-label">Grup İsmi</label>
@@ -602,11 +596,11 @@
     <script src="~/owlcarousel/owl.carousel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
     <script src="~/assets/js/plugins/bootstrap-notify.min.js"></script>
+    <script src="/js/site.js"></script>
     <script src="/js/group.js"></script>
     <script src="/js/survey.js"></script>
     <script src="/js/search.js"></script>
     <script src="~/assets/js/plugins/bootstrap-notify.min.js"></script>
-    <script src="/js/site.js"></script>
     <script>
         let search = document.getElementById("search");
         let search_icon = document.getElementById("search_icon");

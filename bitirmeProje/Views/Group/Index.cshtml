@@ -34,7 +34,7 @@
                     @group.GroupName
                     @if (Role.RoleName == "Yönetici")
                     {
-                        <button class="edit_profile" data-bs-toggle="modal" data-bs-target="#addGroupModal">
+                        <button class="edit_profile" data-bs-toggle="modal" data-bs-target="#updateGroupModal">
                             Profili Düzenle
                         </button>
                     }
@@ -212,13 +212,13 @@
             </div>
         </div>
         <!--Create Group model-->
-        <div class="modal fade" id="addGroupModal" tabindex="-1" aria-labelledby="addGroupModal" aria-hidden="true">
+        <div class="modal fade" id="updateGroupModal" tabindex="-1" aria-labelledby="updateGroupModal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title w-100 fs-5 d-flex align-items-end justify-content-between"
                             id="exampleModalLabel">
-                            <span class="title_create" id="addGroupModalLabel">GRUP</span>
+                            <span class="title_create" id="updateGroupModalLabel">GRUP</span>
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>

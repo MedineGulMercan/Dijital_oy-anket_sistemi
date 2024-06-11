@@ -90,6 +90,7 @@ async function SurveyCreate(event) {
                 $("#end_date").val('');
                 $('#addSurveyModal').modal('hide');
                 success(data.message);
+                location.reload();
             }
             else {
                 error(data.message)
@@ -106,7 +107,7 @@ async function SetVote() {
     const selectedOption = form.querySelector('input[type="radio"]:checked');
     //Eğer seçili şık yoksa seçenek seçin hatası veriyoruz.
     if (!selectedOption) {
-        alert("Lütfen bir seçenek seçin.");
+        error("Lütfen bir seçenek seçin.");
         return;
     }
     //FormData ile verileri controllera gönderiyoruz.

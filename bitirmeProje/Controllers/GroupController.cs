@@ -128,10 +128,10 @@ namespace bitirmeProje.Controllers
             {
                 return BadRequest("Query cannot be empty");
             }
-      //grup isimlerinin küçük harfe çevrilip, arama sorgusunu içerip içermediği kontrol edilir.
+            //grup isimlerinin küçük harfe çevrilip, arama sorgusunu içerip içermediği kontrol edilir.
             var results = _groupRepository
     .GetAll(g => g.GroupName.ToLower().Contains(q.ToLower())) // SQL'e çevrilebilir
-    .Select(g => new { g.Id, g.GroupName,g.ImageUrl })
+    .Select(g => new { g.Id, g.GroupName, g.ImageUrl })
     .ToList();
 
             return Json(results);
@@ -141,45 +141,45 @@ namespace bitirmeProje.Controllers
         {
             var userId = _loginUserHelper.GetLoginUserId();
             var role = await _roleRepository.FirstOrDefaultAsync(x => x.RoleName == "Üye");
-            var group=await _groupRepository.FirstOrDefaultAsync(x=>x.Id==id);
+            var group = await _groupRepository.FirstOrDefaultAsync(x => x.Id == id);
 
             if (role != null)
             {
-                if(group.Private==false)
+                if (group.Private == false)
                 {
-					var data = await _groupUserRepository.CreateAsync(new GroupUser
-					{
-						UserId = userId,
-						GroupId = id,
-						RoleId = role.Id,
-						IsActive = true,
-						IsMember = false
-					});
-					return Json(new Response<GroupUser>
-					{
-						Success = true,
-						Message = "İstek Gönderildi",
-						Result = data
-					});
-				}
+                    var data = await _groupUserRepository.CreateAsync(new GroupUser
+                    {
+                        UserId = userId,
+                        GroupId = id,
+                        RoleId = role.Id,
+                        IsActive = true,
+                        IsMember = false
+                    });
+                    return Json(new Response<GroupUser>
+                    {
+                        Success = true,
+                        Message = "İstek Gönderildi",
+                        Result = data
+                    });
+                }
                 else
                 {
-					var data = await _groupUserRepository.CreateAsync(new GroupUser
-					{
-						UserId = userId,
-						GroupId = id,
-						RoleId = role.Id,
-						IsActive = true,
-						IsMember = true
-					});
-					return Json(new Response<GroupUser>
-					{
-						Success = true,
-						Message = "Üye olundu.",
-						Result = data
-					});
-				}
-              
+                    var data = await _groupUserRepository.CreateAsync(new GroupUser
+                    {
+                        UserId = userId,
+                        GroupId = id,
+                        RoleId = role.Id,
+                        IsActive = true,
+                        IsMember = true
+                    });
+                    return Json(new Response<GroupUser>
+                    {
+                        Success = true,
+                        Message = "Üye olundu.",
+                        Result = data
+                    });
+                }
+
             }
             return Json(new Response<GroupUser>
             {
